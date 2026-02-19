@@ -28,6 +28,7 @@ model User {
   // Relations
   courses_taught    Course[]      @relation("InstructorCourses")
   enrolled_courses  Enrollment[]  // all courses the user is enrolled in
+  attempts          Attempt[]
 
   @@map("users")
 }
@@ -45,6 +46,7 @@ model Course {
   // Relations
   modules          CourseModule[]
   enrolled_students Enrollment[] // all students enrolled
+  assessments      Assessment[]
 
   @@map("courses")
 }
@@ -60,6 +62,7 @@ model CourseModule {
 
   // Relations
   sections      Section[]
+  assessment    Assessment?
 
   @@map("course_modules")
 }
@@ -93,4 +96,106 @@ model Enrollment {
 
   @@id([user_id, course_id]) // Composite PK ensures no duplicate enrollment
   @@map("enrollments")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+enum QuestionType {
+  MCQ_SINGLE
+  MCQ_MULTIPLE
+}
+
+model Assessment {
+  assessment_id    String    @id @default(uuid())
+  title            String
+  description      String?
+  total_marks      Int?
+  duration_minutes Int?
+  max_attempts     Int?      @default(1)
+  created_at       DateTime  @default(now())
+
+  // One final assessment per module
+  fk_module_id     String    @unique
+  module           CourseModule @relation(fields: [fk_module_id], references: [module_id], onDelete: Cascade)
+
+  // optional convenience FK to course
+  fk_course_id     String?
+  course           Course?   @relation(fields: [fk_course_id], references: [course_id], onDelete: Cascade)
+
+  questions        Question[]
+  attempts         Attempt[]
+
+  @@map("assessments")
+}
+
+model Question {
+  question_id     String       @id @default(uuid())
+  question_text   String
+  question_order  Int?
+  question_marks  Int?         @default(1)
+  question_type   QuestionType @default(MCQ_SINGLE)
+
+  fk_assessment_id String
+  assessment      Assessment   @relation(fields: [fk_assessment_id], references: [assessment_id], onDelete: Cascade)
+
+  options         Option[]
+  attemptAnswers  AttemptAnswer[]
+
+  @@map("questions")
+}
+
+model Option {
+  option_id       String       @id @default(uuid())
+  option_text     String
+  is_correct      Boolean      @default(false)
+
+  fk_question_id  String
+  question        Question     @relation(fields: [fk_question_id], references: [question_id], onDelete: Cascade)
+
+  attemptAnswers  AttemptAnswer[]
+
+  @@map("options")
+}
+
+model Attempt {
+  attempt_id       String    @id @default(uuid())
+  fk_user_id       String
+  fk_assessment_id String
+  started_at       DateTime  @default(now())
+  completed_at     DateTime?
+  score            Float?
+
+  user             User      @relation(fields: [fk_user_id], references: [user_id], onDelete: Cascade)
+  assessment       Assessment @relation(fields: [fk_assessment_id], references: [assessment_id], onDelete: Cascade)
+  answers          AttemptAnswer[]
+
+  @@map("attempts")
+}
+
+model AttemptAnswer {
+  answer_id       String       @id @default(uuid())
+  fk_attempt_id   String
+  fk_question_id  String
+  fk_option_id    String?
+  is_correct      Boolean
+  selected_text   String?
+
+  attempt         Attempt      @relation(fields: [fk_attempt_id], references: [attempt_id], onDelete: Cascade)
+  question        Question     @relation(fields: [fk_question_id], references: [question_id], onDelete: Cascade)
+  option          Option?      @relation(fields: [fk_option_id], references: [option_id], onDelete: SetNull)
+
+  @@map("attempt_answers")
 }
