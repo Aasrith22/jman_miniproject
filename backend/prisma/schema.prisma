@@ -83,6 +83,7 @@ model Section {
 }
 
 model Enrollment {
+  entrollment_id String   @id @default(uuid())
   user_id   String
   course_id String
   enrolled_at DateTime @default(now())
