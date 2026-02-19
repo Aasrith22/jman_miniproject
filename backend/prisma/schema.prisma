@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+}
+
+model User {
+  user_id     String   @id @default(uuid())
+  user_role   Role     @default(STUDENT)
+  full_name   String
+  email       String   @unique
+  password    String
+
+  // Relations
+  courses_taught Course[] @relation("InstructorCourses")
+
+  @@map("users")
+}
+
+model Course {
+  course_id        String       @id @default(uuid())
+  course_name      String
+  technology       String
+  created_at       DateTime     @default(now())
+
+  // Foreign Key
+  fk_instructor_id String
+  instructor       User         @relation("InstructorCourses", fields: [fk_instructor_id], references: [user_id], onDelete: Cascade)
+
+  // Relations
+  modules          CourseModule[]
+
+  @@map("courses")
+}
+
+model CourseModule {
+  module_id     String   @id @default(uuid())
+  module_title  String
+  module_describtion String
+
+  // Foreign Key
+  fk_course_id  String
+  course        Course   @relation(fields: [fk_course_id], references: [course_id], onDelete: Cascade)
+
+  // Relations
+  sections      Section[]
+
+  @@map("course_modules")
+}
+
+model Section {
+  section_id        String   @id @default(uuid())
+  section_title     String
+  section_content   String?
+  section_images    String?   // store image URL
+  image_description String?
+  content_url       String?
+  url_description   String?
+
+  created_at        DateTime @default(now())
+
+  // Foreign Key
+  module_id         String
+  module            CourseModule @relation(fields: [module_id], references: [module_id], onDelete: Cascade)
+
+  @@map("sections")
+}
