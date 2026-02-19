@@ -26,7 +26,8 @@ model User {
   password    String
 
   // Relations
-  courses_taught Course[] @relation("InstructorCourses")
+  courses_taught    Course[]      @relation("InstructorCourses")
+  enrolled_courses  Enrollment[]  // all courses the user is enrolled in
 
   @@map("users")
 }
@@ -43,6 +44,7 @@ model Course {
 
   // Relations
   modules          CourseModule[]
+  enrolled_students Enrollment[] // all students enrolled
 
   @@map("courses")
 }
@@ -50,7 +52,7 @@ model Course {
 model CourseModule {
   module_id     String   @id @default(uuid())
   module_title  String
-  module_describtion String
+  module_description String
 
   // Foreign Key
   fk_course_id  String
@@ -78,4 +80,17 @@ model Section {
   module            CourseModule @relation(fields: [module_id], references: [module_id], onDelete: Cascade)
 
   @@map("sections")
+}
+
+model Enrollment {
+  user_id   String
+  course_id String
+  enrolled_at DateTime @default(now())
+
+  // Relations
+  student User   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  course  Course @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
+
+  @@id([user_id, course_id]) // Composite PK ensures no duplicate enrollment
+  @@map("enrollments")
 }
