@@ -5,6 +5,8 @@ import InstructorDashboard from "../pages/InstructorDashboard";
 import StudentDashboard from "../pages/StudentDashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
 import UsersPage from "../pages/UsersPage";
+import CourseForm from "../components/forms/CourseForm";
+import CourseBuilder from "../pages/CourseBuilder";
 
 export default function AppRoutes() {
   return (
@@ -30,6 +32,14 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+          path="/instructor/:instructorId/course/create"
+          element={<CourseForm />}
+        />
+      <Route
+          path="/coursemodule/:courseId"
+          element={<CourseBuilder />}
+        />
     </Routes>
   );
 }
