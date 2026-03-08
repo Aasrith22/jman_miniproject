@@ -6,15 +6,12 @@ const Header = () => {
   return (
     <header className="border-b border-white/[0.07] bg-[#080c14]/80 backdrop-blur-xl sticky top-0 z-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-sky-500 flex items-center justify-center text-xs font-black text-white">
-            L
-          </div>
+        <div className="">
           <span
             className="text-sm font-bold text-white/80 tracking-wide hidden sm:block"
             style={{ fontFamily: "Syne, sans-serif" }}
           >
-            LearnOS
+            LMS
           </span>
         </div>
         <nav className="flex items-center gap-1">
@@ -33,7 +30,7 @@ const Header = () => {
           ))}
         </nav>
         <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-400 to-pink-400 flex items-center justify-center text-xs font-bold">
-          J
+          U
         </div>
       </div>
     </header>
