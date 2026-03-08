@@ -60,3 +60,23 @@
   cursor: pointer;
   padding: 0;
 }
+.question-actions{
+  display:flex;
+  gap:6px;
+}
+
+.edit-btn,
+.delete-btn{
+  width:26px;
+  height:26px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid black;
+  border-radius:50%;
+  background:white;
+  cursor:pointer;
+  padding:0;
+}

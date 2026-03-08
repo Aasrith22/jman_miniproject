@@ -1,50 +1,71 @@
 import "../../styles/questionform.css";
-import { useState } from "react";
-import { CreateQuestionDTO, CreateQuestionChoiceDTO } from "../../types/lms";
-
+import { useState, useEffect } from "react";
+import { CreateQuestionDTO, CreateQuestionChoiceDTO, Questions } from "../../types/lms";
+import { updateQuestion } from "../../api/questionsapi";
 interface Props {
   onAdd: (q: CreateQuestionDTO) => void;
   assessmentId: string;
+  editingQuestion?: any;
+  clearEditing : ()=>void;
+  onUpdate : (q : Questions) => void
 }
 
-const QuestionForm = ({ onAdd, assessmentId }: Props) => {
+const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdate }: Props) => {
 
   const [questionText, setQuestionText] = useState("");
   const [options, setOptions] = useState<string[]>(["", "", "", ""]);
   const [correctIndex, setCorrectIndex] = useState(0);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
 
-    if (!questionText.trim()) {
-      alert("Enter question text");
-      return;
-    }
+  if (!questionText.trim()) {
+    alert("Enter question text");
+    return;
+  }
 
-    if (options.some(opt => opt.trim() === "")) {
-      alert("All options must be filled");
-      return;
-    }
+  if (options.some(opt => opt.trim() === "")) {
+    alert("All options must be filled");
+    return;
+  }
 
-    const choices: CreateQuestionChoiceDTO[] = options.map((opt, i) => ({
-      choice_text: opt,
-      is_correct: i === correctIndex
-    }));
+  const choices: CreateQuestionChoiceDTO[] = options.map((opt, i) => ({
+    choice_text: opt,
+    is_correct: i === correctIndex
+  }));
 
-    const newQuestion: CreateQuestionDTO = {
-      question_text: questionText,
-      question_type: "MULTIPLE_CHOICE",
-      points: 1,
-      fk_assessment_id: assessmentId,
-      choices
-    };
-
-    onAdd(newQuestion);
-
-    setQuestionText("");
-    setOptions(["", "", "", ""]);
-    setCorrectIndex(0);
+  const newQuestion: CreateQuestionDTO = {
+    question_text: questionText,
+    question_type: "MULTIPLE_CHOICE",
+    points: 1,
+    fk_assessment_id: assessmentId,
+    choices
   };
 
+  if (editingQuestion) {
+    const updated = await updateQuestion(editingQuestion.question_id, newQuestion);
+    onUpdate(updated);
+    clearEditing();
+  } else {
+    onAdd(newQuestion);
+  }
+
+  setQuestionText("");
+  setOptions(["", "", "", ""]);
+  setCorrectIndex(0);
+};
+  useEffect(() => {
+
+    if(!editingQuestion) return;
+
+    setQuestionText(editingQuestion.question_text);
+
+    const opts = editingQuestion.choices.map((c:any)=>c.choice_text);
+    setOptions(opts);
+
+    const correct = editingQuestion.choices.findIndex((c:any)=>c.is_correct);
+    setCorrectIndex(correct);
+
+  }, [editingQuestion]);
   return (
     <main className="question-form">
 
@@ -79,7 +100,7 @@ const QuestionForm = ({ onAdd, assessmentId }: Props) => {
         <option value={3}>Correct: Option 4</option>
       </select>
 
-      <button onClick={handleSubmit}>Add Question</button>
+      <button onClick={handleSubmit}>{editingQuestion ? "Save Changes" : "Add Question"}</button>
 
     </main>
   );

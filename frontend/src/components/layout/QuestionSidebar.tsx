@@ -1,39 +1,14 @@
-// import '../../styles/questionsidebar.css'
-// import { Questions } from "../../types/lms"
-
-// interface props{
-//     questions: Questions[],
-//     onAddQuestion: ()=> void,
-// }
-
-// const QuestionSidebar = ({questions,onAddQuestion} : props) => {
-//     return(
-//         <aside className="question-sidebar">
-//             <h3>Questions</h3>
-
-//             {questions.map((q) => (
-//                 <div key={q.question_id}>
-//                     {q.question_text.slice(0,40)}
-//                 </div>
-//             ))}
-
-//             <button onClick={onAddQuestion}>Add Question</button>
-//         </aside>
-//     )
-// }
-
-// export default QuestionSidebar;
-
 import '../../styles/questionsidebar.css'
 import { Questions } from "../../types/lms"
 
 interface Props {
   questions: Questions[],
   onAddQuestion: () => void,
-  onDeleteQuestion: (id: string) => void
+  onDeleteQuestion: (id: string) => void,
+  onEditQuestion: (q : Questions) => void
 }
 
-const QuestionSidebar = ({questions, onAddQuestion, onDeleteQuestion}: Props) => {
+const QuestionSidebar = ({questions, onAddQuestion, onDeleteQuestion, onEditQuestion}: Props) => {
 
   return (
     <aside className="question-sidebar">
@@ -46,7 +21,12 @@ const QuestionSidebar = ({questions, onAddQuestion, onDeleteQuestion}: Props) =>
           <span className="question-text">
             {q.question_text.slice(0, 40)}
           </span>
-
+          <button
+            className="edit-btn"
+            onClick={() => onEditQuestion(q)}
+          >
+            ✏
+          </button>
           <button
             className="delete-btn"
             onClick={() => onDeleteQuestion(q.question_id)}

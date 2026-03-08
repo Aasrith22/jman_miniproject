@@ -99,4 +99,37 @@ export class CourseService {
             }
         )
     }
+
+    async updatequestion(id :string , data : CreateQuestionDTO){
+        await this.prismaservice.questionChoice.deleteMany(
+            {
+                where:{
+                    fk_question_id:id,
+                }
+            }
+        )
+
+        return this.prismaservice.questions.update(
+            {
+                where:{
+                    question_id:id
+                },
+                data:{
+                    question_text : data.question_text,
+                    question_type : data.question_type,
+                    points : data.points,
+
+                    choices:{
+                        create : data.choices.map((cho) => ({
+                            choice_text : cho.choice_text,
+                            is_correct : cho.is_correct,
+                        }))
+                    }
+                },
+                include:{
+                    choices:true,
+                }
+            }
+        )
+    }
 }

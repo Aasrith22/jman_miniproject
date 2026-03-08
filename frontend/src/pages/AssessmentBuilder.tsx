@@ -12,6 +12,7 @@ const AssessmentBuilder = () => {
   const { assessmentId } = useParams<{ assessmentId: string }>();
 
   const [questions, setQuestions] = useState<Questions[]>([]);
+  const [editingQuestion, setEditingQuestion] = useState<Questions | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
@@ -45,6 +46,21 @@ const AssessmentBuilder = () => {
     prev.filter(q => q.question_id !== qid)
   );
   }
+  const handleEditQuestion = (q: Questions) => {
+    setEditingQuestion(q);
+    setShowForm(true);
+  };
+  const clearEditing = () => {
+    setEditingQuestion(null);
+  };
+
+  const handleUpdateQuestion = (updated: Questions) => {
+  setQuestions(prev =>
+    prev.map(q =>
+      q.question_id === updated.question_id ? updated : q
+    )
+  );
+};
   return (
   <div className="assessment-layout">
 
@@ -52,6 +68,7 @@ const AssessmentBuilder = () => {
       questions={questions}
       onAddQuestion={() => setShowForm(true)}
       onDeleteQuestion={handledeletequestion}
+      onEditQuestion={ handleEditQuestion}
     />
 
     <div className="assessment-content">
@@ -60,6 +77,9 @@ const AssessmentBuilder = () => {
         <QuestionForm
           onAdd={addQuestion}
           assessmentId={assessmentId}
+          editingQuestion={editingQuestion}
+          clearEditing={clearEditing}
+          onUpdate={handleUpdateQuestion}
         />
       ) : (
         <div className="assessment-placeholder">

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Patch } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course-dto';
 import { CourseService } from './course.service';
 import { CreateAssessmentDTO } from './dto/create-assessment-dto';
@@ -49,5 +49,11 @@ export class CourseController {
     async deletequestion(@Param('id') id : string){
         console.log(`deleting the question with id ${id}`);
         return await this.courseservice.deletequestion(id);
+    }
+    @Patch('/questions/update/:id')
+    async updatequestion(@Param('id') id:string, @Body() dto : CreateQuestionDTO ){
+        console.log(dto);
+        console.log("updating question");
+        return await this.courseservice.updatequestion(id,dto);
     }
 }

@@ -17,3 +17,8 @@ export const deleteQuestion = async (questionId: string) => {
   const res = await api.delete(`course/questions/${questionId}`);
   return res.data;
 };
+
+export const updateQuestion = async (questionId : string , data : CreateQuestionDTO) => {
+    const res = await api.patch(`course/questions/update/${questionId}`,data);
+    return res.data;
+}   
