@@ -181,7 +181,7 @@ model AssessmentAttempt {
   passed        Boolean  @default(false)
   attempted_at  DateTime @default(now())
 
-  s
+  
   fk_user_id       String
   fk_assessment_id String
 
@@ -199,7 +199,7 @@ model StudentAnswer {
   answer_id     String  @id @default(uuid())
   text_answer   String? // used for SHORT_ANSWER type
 
-  s
+  
   fk_attempt_id  String
   fk_question_id String
   fk_choice_id   String? 
