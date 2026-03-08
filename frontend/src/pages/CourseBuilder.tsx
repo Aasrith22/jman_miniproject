@@ -1,11 +1,18 @@
 import '../styles/coursebuilder.css';
 
+import { useNavigate } from 'react-router-dom';
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
+import { Assessment } from '../types/lms';
 
 import { CourseModule, Section } from "../types/lms";
 import { fetchModules } from "../api/moduleapi";
 import { fetchSections } from "../api/sectionapi";
+import { deleteAssessment, fetchAssessment } from "../api/assessmentapi"
+
+
 
 import LeftSidebar from "../components/layout/LeftSidebar";
 import RightSidebar from "../components/layout/RightSideBar";
@@ -19,6 +26,7 @@ const CourseBuilder = () => {
 
   const [modules, setModules] = useState<CourseModule[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
+  const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [selectedModule, setSelectedModule] =
     useState<CourseModule | null>(null);
   const [activeForm, setActiveForm] = useState<ActiveForm>(null);
@@ -27,6 +35,11 @@ const CourseBuilder = () => {
     if (!courseId) return;
     fetchModules(courseId).then(setModules);
   }, [courseId]);
+    
+  useEffect(() => {
+    if(!courseId) return;
+    fetchAssessment(courseId).then(setAssessment);
+  })
 
   useEffect(() => {
     if (!selectedModule) {
@@ -46,13 +59,18 @@ const CourseBuilder = () => {
       setSections(secs);
     }
   };
-
+  const navigate = useNavigate();
   return (
     <div className="layout">
       <LeftSidebar
         modules={modules}
         onSelectModule={setSelectedModule}
         onAddModule={() => setActiveForm("addModule")}
+        assessment={assessment}
+        onCreateAssessment={()=>{
+          navigate(`/${courseId}/assessment/create`)
+        }}
+        onDeleteAssessment={deleteAssessment}
       />
 
       <CenterPanel

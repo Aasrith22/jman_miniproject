@@ -1,0 +1,62 @@
+.question-sidebar {
+  height: 100vh;
+  width : 260px;
+  border-right: 2px solid black;
+  padding: 20px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.question-sidebar h3 {
+  margin-bottom: 20px;
+}
+
+/* question items */
+
+.question-sidebar div {
+  border: 1px solid black;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* button */
+
+.question-sidebar button {
+  margin-top: auto;
+  padding: 10px;
+  color: black;
+  border: 2px solid black;
+  background: white;
+  cursor: pointer;
+}
+.question-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border: 1px solid black;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.question-text {
+  flex: 1;
+}
+
+.delete-btn {
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid black;
+  border-radius: 50%;
+
+  background: white;
+  cursor: pointer;
+  padding: 0;
+}

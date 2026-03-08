@@ -7,6 +7,9 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import UsersPage from "../pages/UsersPage";
 import CourseForm from "../components/forms/CourseForm";
 import CourseBuilder from "../pages/CourseBuilder";
+import AssessmentForm from "../components/forms/Assessmentform"
+import QuestionForm from "../components/forms/QuestionForm";
+import AssessmentBuilder from "../pages/AssessmentBuilder";
 
 export default function AppRoutes() {
   return (
@@ -39,6 +42,14 @@ export default function AppRoutes() {
       <Route
           path="/coursemodule/:courseId"
           element={<CourseBuilder />}
+        />
+      <Route 
+          path="/:courseId/assessment/create"
+          element={<AssessmentForm />}
+        />
+      <Route
+          path="/assessment/:assessmentId"
+          element={<AssessmentBuilder/>}
         />
     </Routes>
   );
