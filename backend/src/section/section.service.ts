@@ -11,6 +11,13 @@ export class SectionService {
                 data : {
                     section_title:dto.section_title,
                     section_content:dto.section_content,
+
+                    section_images:dto.section_images,
+                    image_description:dto.image_description,
+
+                    content_url: dto.content_url,
+                    url_description: dto.url_description,
+                    
                     module:{
                         connect:{
                             module_id:id

@@ -31,7 +31,16 @@ export interface CreateModuleDto{
     module_description : string;
     course_id : string;
 }
-export interface CreateSectionDto{
-    section_title : string,
-    module_id : string;
+// export interface CreateSectionDto{
+//     section_title : string,
+//     module_id : string;
+// }
+export interface CreateSectionDto {
+  section_title: string;
+  module_id: string;
+  section_content?: string;
+  section_images?: string;
+  image_description?: string;
+  content_url?: string;
+  url_description?: string;
 }

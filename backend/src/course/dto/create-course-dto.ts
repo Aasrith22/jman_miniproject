@@ -3,14 +3,14 @@ import { IsNotEmpty, IsString } from "class-validator";
 export class CreateCourseDto{
     @IsString()
     @IsNotEmpty()
-    course_name : string
+    course_name !: string
 
     @IsString()
     @IsNotEmpty()
-    technology : string
+    technology !: string
 
     @IsString()
     @IsNotEmpty()
-    fk_instructor_id : string
+    fk_instructor_id !: string
 
 }
