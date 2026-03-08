@@ -32,6 +32,19 @@ export class CoursesService {
     }));
   }
 
+  async getCourseById(courseId: string) {
+    return prisma.course.findUnique({
+      where: { course_id: courseId },
+      include: {
+        instructor: { select: { user_id: true, full_name: true } },
+        modules: {
+          include: { sections: true },
+          orderBy: { module_title: 'asc' },
+        },
+      },
+    });
+  }
+
   async enroll(userId: string, courseId: string) {
     // create enrollment if not exists
     await prisma.enrollment.upsert({

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -12,8 +13,9 @@ type Course = {
   enrolled?: boolean;
 };
 
-export default function CourseList() {
+export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: boolean }) {
   const { user, openLoginModal, addToWishlist, removeFromWishlist, isWishlisted } = useAuth();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
@@ -49,12 +51,7 @@ export default function CourseList() {
   }
 
   async function handleEnrollClick(course: Course) {
-    const uid = getUserId();
-    if (!uid) {
-      openLoginModal();
-      return;
-    }
-    await toggleEnroll(uid, course);
+    navigate(`/enrollment/${course.course_id}`, { state: { course } });
   }
 
   async function toggleEnroll(uid: string, course: Course) {
@@ -81,6 +78,8 @@ export default function CourseList() {
     await toggleEnroll(uid, course);
   }
 
+  const displayCourses = enrolledOnly ? courses.filter(c => c.enrolled) : courses;
+
   if (loading) return <div style={s.centered}>Loading courses...</div>;
   if (fetchError) return <div style={{ ...s.centered, color: '#ef4444' }}>{fetchError}</div>;
 
@@ -96,10 +95,17 @@ export default function CourseList() {
           <span style={s.toastClose}>×</span>
         </div>
       )}
-      <h1 style={s.pageTitle}>Registered Courses</h1>
+      <h1 style={s.pageTitle}>{enrolledOnly ? 'My Enrolled Courses' : 'Browse Courses'}</h1>
+
+      {enrolledOnly && displayCourses.length === 0 && !loading && (
+        <div style={s.centered}>
+          <p>You haven't enrolled in any courses yet.</p>
+          <button style={s.enrollBtn} onClick={() => navigate('/my-courses')}>Browse Courses</button>
+        </div>
+      )}
 
       <div style={s.grid}>
-        {courses.map(course => (
+        {displayCourses.map(course => (
           <div key={course.course_id} style={s.card} className="course-card" onClick={() => setOpenMenuId(null)}>
             <div style={s.cardTop}>
               <span style={s.techBadge}>{course.technology}</span>

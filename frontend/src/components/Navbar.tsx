@@ -74,7 +74,6 @@ export default function Navbar() {
           ))}
 
           <div style={s.divider} />
-
         </div>
       )}
     </>
@@ -118,7 +117,6 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 14, fontWeight: 600, color: '#fff',
     maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
-
   /* Slide panel */
   slidePanel: {
     position: 'fixed', top: 64, right: 0,

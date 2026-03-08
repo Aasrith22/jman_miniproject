@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Query, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, NotFoundException, Param, Post, Query, UnauthorizedException } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 
 @Controller('courses')
@@ -8,6 +8,13 @@ export class CoursesController {
   @Get()
   async list(@Query('userId') userId?: string) {
     return this.coursesService.listCourses(userId);
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    const course = await this.coursesService.getCourseById(id);
+    if (!course) throw new NotFoundException('Course not found');
+    return course;
   }
 
   @Post('login')
