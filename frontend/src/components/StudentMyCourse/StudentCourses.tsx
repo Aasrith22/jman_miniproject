@@ -1,5 +1,8 @@
 import { useState } from "react";
 
+import CourseCard from "./CourseCard";
+import { badgeStyle } from "../../utils/badgeStyle";
+
 import { Course , Module , Lesson } from "../../Types/course_type";
 import { COURSES } from "../../assets/dymmyData";
 import { IconVideo, IconReading , IconAssignment , IconBack , IconCheck , IconChevron , IconClock , IconQuiz } from "../../assets/icons/course_icons";
@@ -10,12 +13,6 @@ const lessonTypeConfig = {
   reading:    { icon: <IconReading />,    label: "Reading",    color: "text-amber-400",  bg: "bg-amber-400/10" },
   quiz:       { icon: <IconQuiz />,       label: "Quiz",       color: "text-violet-400", bg: "bg-violet-400/10" },
   assignment: { icon: <IconAssignment />, label: "Assignment", color: "text-rose-400",   bg: "bg-rose-400/10" },
-};
-
-const badgeStyle = (badge: string) => {
-  if (badge === "Completed")    return "bg-emerald-400/15 text-emerald-400 border border-emerald-400/30";
-  if (badge === "Just Started") return "bg-amber-400/15 text-amber-400 border border-amber-400/30";
-  return "bg-sky-400/15 text-sky-400 border border-sky-400/30";
 };
 
 
@@ -181,54 +178,6 @@ const CourseDetail = ({ course, onBack }: { course: Course; onBack: () => void }
   );
 };
 
-
-const CourseCard = ({ course, onClick }: { course: Course; onClick: () => void }) => (
-  <button
-    onClick={onClick}
-    className="group w-full text-left relative rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] overflow-hidden transition-all duration-300 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30"
-  >
-    <div className="absolute top-0 left-0 w-full h-1 opacity-60"
-      style={{ background: `linear-gradient(90deg, ${course.accent}, transparent)` }} />
-
-    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-      style={{ background: `radial-gradient(ellipse at top left, ${course.accent}08, transparent 70%)` }} />
-
-    <div className="p-5 relative">
-      <div className="flex items-start gap-3 mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-          style={{ background: `${course.accent}20` }}>
-          {course.thumbnail}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${badgeStyle(course.badge)}`}>
-              {course.badge}
-            </span>
-          </div>
-          <h3 className="text-sm font-semibold text-white/90 leading-snug line-clamp-2 group-hover:text-white transition-colors">
-            {course.title}
-          </h3>
-          <p className="text-xs text-white/40 mt-0.5">{course.instructor}</p>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs text-white/40">
-          <span>{course.completedLessons} of {course.totalLessons} lessons</span>
-          <span style={{ color: course.accent }} className="font-semibold">{course.progress}%</span>
-        </div>
-        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{ width: `${course.progress}%`, background: `linear-gradient(90deg, ${course.accent}cc, ${course.accent})` }}
-          />
-        </div>
-      </div>
-
-      <p className="text-[10px] text-white/25 mt-3">Last accessed {course.lastAccessed}</p>
-    </div>
-  </button>
-);
 
 
 export default function StudentCourses() {

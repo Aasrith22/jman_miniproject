@@ -15,7 +15,7 @@ const Header = () => {
           </span>
         </div>
         <nav className="flex items-center gap-1">
-          {["Dashboard", "My Courses", "Explore", "Community"].map((item) => (
+          {["My Courses"].map((item) => (
             <button
               key={item}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors
