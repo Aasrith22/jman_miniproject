@@ -9,7 +9,7 @@ import CourseForm from "../components/forms/CourseForm";
 import CourseBuilder from "../pages/CourseBuilder";
 
 // YOUR NEW IMPORTS
-import BrowseCourses from "../pages/BrowserCourses";
+import BrowseCourses from "../pages/BrowseCourses";
 import CourseDetails from "../pages/CourseDetails";
 
 export default function AppRoutes() {
