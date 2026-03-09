@@ -1,7 +1,7 @@
 import React from 'react'
-import { Course } from '../../Types/course_type';
-import { IconBack } from '../../assets/icons/course_icons';
-import { badgeStyle } from '../../utils/badgeStyle';
+import { Course } from '../../../Types/course_type';
+import { IconBack } from '../../../assets/icons/course_icons';
+import { badgeStyle } from '../../../utils/badgeStyle';
 import ModuleAccordion from './ModuleAccordion';
 
 

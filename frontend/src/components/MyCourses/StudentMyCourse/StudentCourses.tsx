@@ -3,9 +3,9 @@ import { useState } from "react";
 import CourseCard from "./CourseCard";
 import CourseDetail from "./CourseDetail";
 
-import { Course } from "../../Types/course_type";
-import { COURSES } from "../../assets/dymmyData";
-import Header from "../Header";
+import { Course } from "../../../Types/course_type";
+import { COURSES } from "../../../assets/dymmyData";
+import Header from "../../Header";
 
 
 

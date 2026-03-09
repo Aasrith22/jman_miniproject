@@ -1,7 +1,7 @@
 import React from 'react';
-import StudentCourses from './components/StudentMyCourse/StudentCourses';
+import StudentCourses from './components/MyCourses/StudentMyCourse/StudentCourses';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AssessmentModule from './components/CourseAssessment/AssessmentModule';
+import AssessmentModule from './components/MyCourses/CourseAssessment/AssessmentModule';
 import MyCourseLayout from './components/MyCourseLayout';
 
 function App() {

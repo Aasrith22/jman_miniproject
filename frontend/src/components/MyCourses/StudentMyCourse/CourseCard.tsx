@@ -1,6 +1,6 @@
 import React from 'react'
-import { Course } from '../../Types/course_type';
-import { badgeStyle } from '../../utils/badgeStyle';
+import { Course } from '../../../Types/course_type';
+import { badgeStyle } from '../../../utils/badgeStyle';
 
 const CourseCard = ({ course, onClick }: { course: Course; onClick: () => void }) => (
   <button
