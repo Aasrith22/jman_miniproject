@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
+import { loginUser } from '../../api/auth.api';
+import { useAuth } from '../../auth/useAuth';
 
-const API = 'http://localhost:3000';
+// backend base URL already configured in axios instance
+
 
 export default function ProfilePage() {
   const { user, login } = useAuth();
@@ -16,8 +17,8 @@ export default function ProfilePage() {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(`${API}/courses/login`, form);
-      login(res.data);
+      const res = await loginUser(form);
+      login(res.data.access_token);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
@@ -62,7 +63,7 @@ export default function ProfilePage() {
   return (
     <div style={s.page}>
       <div style={s.card}>
-        <div style={s.avatarLarge}>{user.full_name.charAt(0).toUpperCase()}</div>
+        <div style={s.avatarLarge}>{user.full_name?.charAt(0).toUpperCase()}</div>
         <h2 style={s.title}>{user.full_name}</h2>
         <span style={s.roleBadge}>{user.role}</span>
 
@@ -77,7 +78,7 @@ export default function ProfilePage() {
           </div>
           <div style={s.detailRow}>
             <span style={s.label}>User ID</span>
-            <span style={{ ...s.value, fontSize: 12, color: '#9ca3af' }}>{user.user_id}</span>
+            <span style={{ ...s.value, fontSize: 12, color: '#9ca3af' }}>{user.sub}</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../auth/useAuth';
 
 export default function Navbar() {
   const location = useLocation();
@@ -16,7 +16,7 @@ export default function Navbar() {
 
         {/* Centre links */}
         <div style={s.links}>
-          {[{ to: '/my-courses', label: 'Courses' }, { to: '/enroll', label: 'Enrolled' }, { to: '/analytics', label: 'Analytics' }].map(({ to, label }) => (
+          {[{ to: '/student/my-courses', label: 'Courses' }, { to: '/student/enroll', label: 'Enrolled' }, { to: '/student/analytics', label: 'Analytics' }].map(({ to, label }) => (
             <Link key={to} to={to} className={`nav-link${isActive(to) ? ' nav-link-active' : ''}`} style={{ ...s.link, ...(isActive(to) ? s.linkActive : {}) }}>
               {label}
             </Link>
@@ -31,11 +31,11 @@ export default function Navbar() {
               onMouseEnter={() => setPanelOpen(true)}
               onMouseLeave={() => setPanelOpen(false)}
             >
-              <div style={s.avatar}>{user.full_name.charAt(0).toUpperCase()}</div>
+              <div style={s.avatar}>{user.full_name?.charAt(0).toUpperCase()}</div>
               <span style={s.userName}>{user.full_name}</span>
             </div>
           ) : (
-            <Link to="/profile" className={`nav-link${isActive('/profile') ? ' nav-link-active' : ''}`} style={{ ...s.link, ...(isActive('/profile') ? s.linkActive : {}) }}>
+            <Link to="/student/profile" className={`nav-link${isActive('/student/profile') ? ' nav-link-active' : ''}`} style={{ ...s.link, ...(isActive('/student/profile') ? s.linkActive : {}) }}>
               Profile
             </Link>
           )}
@@ -51,7 +51,7 @@ export default function Navbar() {
         >
           {/* Header */}
           <div style={s.panelHeader}>
-            <div style={s.panelAvatar}>{user.full_name.charAt(0).toUpperCase()}</div>
+            <div style={s.panelAvatar}>{user.full_name?.charAt(0).toUpperCase()}</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <div style={s.panelName}>{user.full_name}</div>
               <span style={s.panelRoleBadge}>{user.role}</span>
@@ -65,7 +65,7 @@ export default function Navbar() {
           {[
             { label: '✉️  Email', value: user.email },
             { label: '🪪  Role', value: user.role },
-            { label: '🔑  User ID', value: String(user.user_id) },
+            { label: '🔑  User ID', value: String(user.sub) },
           ].map(({ label, value }) => (
             <div key={label} style={s.detailRow}>
               <span style={s.detailLabel}>{label}</span>

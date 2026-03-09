@@ -30,6 +30,7 @@ export class AuthService {
       sub: user.user_id,
       role: user.user_role,
       email: user.email,
+      full_name: user.full_name, // include name so frontend can display it
     };
     console.log(user.user_id);
     return {

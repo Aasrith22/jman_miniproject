@@ -7,10 +7,11 @@ async function main() {
 
   // Clear existing data (optional, for development)
   console.log("🧹 Clearing existing data...");
-  await prisma.attemptAnswer.deleteMany({});
-  await prisma.attempt.deleteMany({});
-  await prisma.option.deleteMany({});
-  await prisma.question.deleteMany({});
+  // must delete children before parents to avoid FK violations
+  await prisma.studentAnswer.deleteMany({});
+  await prisma.assessmentAttempt.deleteMany({});
+  await prisma.questionChoice.deleteMany({});
+  await prisma.questions.deleteMany({});
   await prisma.assessment.deleteMany({});
   await prisma.enrollment.deleteMany({});
   await prisma.section.deleteMany({});
@@ -262,7 +263,7 @@ async function main() {
   // 7. CREATE QUESTIONS (3 per assessment)
   // ============================================
   console.log("❓ Creating questions...");
-  const q1_1 = await prisma.question.create({
+  const q1_1 = await prisma.questions.create({
     data: {
       question_text: "What is React?",
       question_order: 1,
@@ -272,7 +273,7 @@ async function main() {
     },
   });
 
-  const q1_2 = await prisma.question.create({
+  const q1_2 = await prisma.questions.create({
     data: {
       question_text: "Which of the following are React core concepts? (Select all that apply)",
       question_order: 2,
@@ -282,7 +283,7 @@ async function main() {
     },
   });
 
-  const q1_3 = await prisma.question.create({
+  const q1_3 = await prisma.questions.create({
     data: {
       question_text: "What does JSX stand for?",
       question_order: 3,
@@ -292,7 +293,7 @@ async function main() {
     },
   });
 
-  const q2_1 = await prisma.question.create({
+  const q2_1 = await prisma.questions.create({
     data: {
       question_text: "How do you declare state in a functional component?",
       question_order: 1,
@@ -302,7 +303,7 @@ async function main() {
     },
   });
 
-  const q2_2 = await prisma.question.create({
+  const q2_2 = await prisma.questions.create({
     data: {
       question_text: "What is the purpose of useEffect?",
       question_order: 2,
@@ -312,7 +313,7 @@ async function main() {
     },
   });
 
-  const q2_3 = await prisma.question.create({
+  const q2_3 = await prisma.questions.create({
     data: {
       question_text: "Which is a state management library for React?",
       question_order: 3,
@@ -322,7 +323,7 @@ async function main() {
     },
   });
 
-  const q3_1 = await prisma.question.create({
+  const q3_1 = await prisma.questions.create({
     data: {
       question_text: "What is Express.js?",
       question_order: 1,
@@ -332,7 +333,7 @@ async function main() {
     },
   });
 
-  const q3_2 = await prisma.question.create({
+  const q3_2 = await prisma.questions.create({
     data: {
       question_text: "How do you create a simple HTTP server with Express?",
       question_order: 2,
@@ -342,7 +343,7 @@ async function main() {
     },
   });
 
-  const q3_3 = await prisma.question.create({
+  const q3_3 = await prisma.questions.create({
     data: {
       question_text: "What are middleware functions in Express?",
       question_order: 3,
@@ -357,8 +358,8 @@ async function main() {
   // ============================================
   // 8. CREATE OPTIONS (4 per question)
   // ============================================
-  console.log("🎯 Creating options...");
-  await prisma.option.createMany({
+  console.log("🎯 Creating question choices...");
+  await prisma.questionChoice.createMany({
     data: [
       // Q1_1 options
       {
@@ -558,7 +559,7 @@ async function main() {
   // 9. CREATE ATTEMPTS (students take assessments)
   // ============================================
   console.log("💼 Creating attempts...");
-  const attempt1 = await prisma.attempt.create({
+  const attempt1 = await prisma.assessmentAttempt.create({
     data: {
       fk_user_id: student1.user_id,
       fk_assessment_id: assessment1.assessment_id,
@@ -567,7 +568,7 @@ async function main() {
     },
   });
 
-  const attempt2 = await prisma.attempt.create({
+  const attempt2 = await prisma.assessmentAttempt.create({
     data: {
       fk_user_id: student2.user_id,
       fk_assessment_id: assessment1.assessment_id,
@@ -576,7 +577,7 @@ async function main() {
     },
   });
 
-  const attempt3 = await prisma.attempt.create({
+  const attempt3 = await prisma.assessmentAttempt.create({
     data: {
       fk_user_id: student3.user_id,
       fk_assessment_id: assessment2.assessment_id,
@@ -592,30 +593,30 @@ async function main() {
   // ============================================
   console.log("✍️  Creating attempt answers...");
   
-  // Get options for linking
-  const options = await prisma.option.findMany();
+  // Get choices for linking
+  const options = await prisma.questionChoice.findMany();
   
   // student1 attempt1 answers
-  await prisma.attemptAnswer.createMany({
+  await prisma.studentAnswer.createMany({
     data: [
       {
         fk_attempt_id: attempt1.attempt_id,
         fk_question_id: q1_1.question_id,
-        fk_option_id: options.find(o => o.option_text === "A JavaScript library for building user interfaces")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "A JavaScript library for building user interfaces")?.choice_id,
         is_correct: true,
         selected_text: "A JavaScript library for building user interfaces",
       },
       {
         fk_attempt_id: attempt1.attempt_id,
         fk_question_id: q1_2.question_id,
-        fk_option_id: options.find(o => o.option_text === "Components")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "Components")?.choice_id,
         is_correct: false, // user only selected 1 out of 3 correct
         selected_text: "Components",
       },
       {
         fk_attempt_id: attempt1.attempt_id,
         fk_question_id: q1_3.question_id,
-        fk_option_id: options.find(o => o.option_text === "JavaScript XML")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "JavaScript XML")?.choice_id,
         is_correct: true,
         selected_text: "JavaScript XML",
       },
@@ -623,21 +624,21 @@ async function main() {
       {
         fk_attempt_id: attempt2.attempt_id,
         fk_question_id: q1_1.question_id,
-        fk_option_id: options.find(o => o.option_text === "A JavaScript library for building user interfaces")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "A JavaScript library for building user interfaces")?.choice_id,
         is_correct: true,
         selected_text: "A JavaScript library for building user interfaces",
       },
       {
         fk_attempt_id: attempt2.attempt_id,
         fk_question_id: q1_2.question_id,
-        fk_option_id: options.find(o => o.option_text === "Props")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "Props")?.choice_id,
         is_correct: true,
         selected_text: "Props",
       },
       {
         fk_attempt_id: attempt2.attempt_id,
         fk_question_id: q1_3.question_id,
-        fk_option_id: options.find(o => o.option_text === "JavaScript XML")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "JavaScript XML")?.choice_id,
         is_correct: true,
         selected_text: "JavaScript XML",
       },
@@ -645,21 +646,21 @@ async function main() {
       {
         fk_attempt_id: attempt3.attempt_id,
         fk_question_id: q2_1.question_id,
-        fk_option_id: options.find(o => o.option_text === "Using the useState hook")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "Using the useState hook")?.choice_id,
         is_correct: true,
         selected_text: "Using the useState hook",
       },
       {
         fk_attempt_id: attempt3.attempt_id,
         fk_question_id: q2_2.question_id,
-        fk_option_id: options.find(o => o.option_text === "To handle side effects in functional components")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "To handle side effects in functional components")?.choice_id,
         is_correct: true,
         selected_text: "To handle side effects in functional components",
       },
       {
         fk_attempt_id: attempt3.attempt_id,
         fk_question_id: q2_3.question_id,
-        fk_option_id: options.find(o => o.option_text === "Redux")?.option_id,
+        fk_choice_id: options.find(o => o.option_text === "Redux")?.choice_id,
         is_correct: true,
         selected_text: "Redux",
       },

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../../../context/AuthContext";
+import { loginUser } from '../../../api/auth.api';
+import { useAuth } from "../../../auth/useAuth";
 
 const API = "http://localhost:3000";
 
@@ -30,10 +31,11 @@ type CourseDetail = {
 function EnrollmentPage() {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const [course, setCourse] = useState<CourseDetail | null>(null);
   const [form, setForm] = useState({ full_name: "", email: "", password: "" });
+  // note: full_name not used by auth endpoint but retained for UI
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -74,22 +76,16 @@ function EnrollmentPage() {
 
     setEnrolling(true);
     try {
-      // 1. Login with email & password to get user_id
-      const loginRes = await axios.post(`${API}/courses/login`, {
-        email: form.email,
-        password: form.password,
-      });
-      const userData = loginRes.data;
+      // 1. Authenticate via backend auth endpoint
+      const loginRes = await loginUser({ email: form.email, password: form.password });
+      login(loginRes.data.access_token);
 
-      // 2. Save user info so Enrolled tab & navbar profile work
-      localStorage.setItem("user_id", userData.user_id);
-      localStorage.setItem("auth_user", JSON.stringify(userData));
-      login(userData);
-
-      // 3. Enroll the user in the course
+      // 2. Enroll using the user id decoded from JWT (available through context)
+      const uid = user?.sub;
+      if (!uid) throw new Error("Unable to determine user id");
       await axios.post(`${API}/courses/enroll`, {
-        user_id: userData.user_id,
-        course_id: courseId,
+        user_id: uid,
+        course_id: courseId || '',
       });
       setSuccess(true);
     } catch (err: any) {
@@ -123,7 +119,7 @@ function EnrollmentPage() {
           <p style={s.successText}>
             You have been enrolled in <strong>{course?.course_name}</strong>.
           </p>
-          <button style={s.primaryBtn} onClick={() => navigate("/enroll")}>
+          <button style={s.primaryBtn} onClick={() => navigate("/student/enroll")}>
             ← Back to Courses
           </button>
         </div>

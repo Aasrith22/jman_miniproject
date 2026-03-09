@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../auth/useAuth';
 
 const API = 'http://localhost:3000';
 
@@ -14,7 +14,7 @@ type Course = {
 };
 
 export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: boolean }) {
-  const { user, openLoginModal, addToWishlist, removeFromWishlist, isWishlisted } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,12 +27,13 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
     setTimeout(() => setToast(null), 3500);
   };
 
-  const toggleLike = (e: React.MouseEvent, course: Course) => {
-    e.stopPropagation();
-    isWishlisted(course.course_id) ? removeFromWishlist(course.course_id) : addToWishlist(course);
+  // wishlist functionality removed; token-only auth now
+  const toggleLike = (_e: React.MouseEvent, _course: Course) => {
+    /* no-op */
   };
 
-  const getUserId = () => user?.user_id || localStorage.getItem('user_id');
+  const getUserId = () => user?.sub; // JWT payload 'sub' is user id
+
 
   useEffect(() => { loadCourses(); }, [user]);
 
@@ -51,7 +52,8 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
   }
 
   async function handleEnrollClick(course: Course) {
-    navigate(`/enrollment/${course.course_id}`, { state: { course } });
+    // navigate to nested enrollment route under /student
+    navigate(`/student/enrollment/${course.course_id}`, { state: { course } });
   }
 
   async function toggleEnroll(uid: string, course: Course) {
@@ -100,7 +102,7 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
       {enrolledOnly && displayCourses.length === 0 && !loading && (
         <div style={s.centered}>
           <p>You haven't enrolled in any courses yet.</p>
-          <button style={s.enrollBtn} onClick={() => navigate('/my-courses')}>Browse Courses</button>
+          <button style={s.enrollBtn} onClick={() => navigate('/student/my-courses')}>Browse Courses</button>
         </div>
       )}
 
@@ -138,16 +140,7 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
                 <button style={s.enrollBtn} className="enroll-btn" onClick={() => handleEnrollClick(course)}>
                   Enroll Now
                 </button>
-                {user && (
-                  <button
-                    style={s.heartBtn}
-                    className="heart-btn"
-                    onClick={e => toggleLike(e, course)}
-                    title={isWishlisted(course.course_id) ? 'Remove from wishlist' : 'Add to wishlist'}
-                  >
-                    {isWishlisted(course.course_id) ? '❤️' : '🤍'}
-                  </button>
-                )}
+
               </div>
             )}
           </div>
