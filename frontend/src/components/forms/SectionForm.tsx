@@ -45,16 +45,19 @@
 // export default SectionForm;
 
 import "../../styles/form.css";
-import { useState } from "react";
-import { CreateSectionDto } from "../../types/lms";
-import { createSection } from "../../api/sectionapi";
+import { useState,useEffect } from "react";
+import { CreateSectionDto, Section } from "../../types/lms";
+import { createSection, updateSection } from "../../api/sectionapi";
 
 interface Props {
   moduleId: string;
   onSuccess: () => void;
+  editingSection ?: Section | null;
+  onUpdate : (s :Section) => void;
+  clearEditing : () => void;
 }
 
-const SectionForm = ({ moduleId, onSuccess }: Props) => {
+const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditing }: Props) => {
 
   const [section_title, setTitle] = useState("");
   const [section_content, setContent] = useState("");
@@ -108,10 +111,22 @@ const SectionForm = ({ moduleId, onSuccess }: Props) => {
       url_description: url_description || undefined,
     };
 
-    await createSection(data);
-    onSuccess();
+    if (editingSection) {
+      const updated = await updateSection(editingSection.section_id,data);
+      onUpdate(updated);
+      clearEditing?.();
+    } else {
+      await createSection(data);
+      onSuccess();
+    }
   };
-
+  useEffect(() => {
+    if (!editingSection) return;
+    setTitle(editingSection.section_title);
+    setContent(editingSection.section_content || "");
+    setImageDescription(editingSection.image_description || "");
+    setUrlDescription(editingSection.url_description || "");
+  }, [editingSection]);
   return (
     <form onSubmit={handleSubmit}>
 
@@ -157,7 +172,7 @@ const SectionForm = ({ moduleId, onSuccess }: Props) => {
         onChange={(e) => setUrlDescription(e.target.value)}
       />
 
-      <button type="submit">Add</button>
+      <button>{editingSection ? "Save Changes" : "Add"}</button>
 
     </form>
   );

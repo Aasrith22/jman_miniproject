@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Param } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param,Delete,Patch } from '@nestjs/common';
 import { SectionService } from './section.service';
 import { CreateSectionDto } from './dto/create-section.dto';
 
@@ -18,4 +18,15 @@ export class SectionController {
         return this.sectionservice.getsections(id);
     }
 
+    @Delete('/deletesection/:id')
+    deletesection(@Param('id') id : string){
+        console.log("deleting section - msg from section's module's controller");
+        return this.sectionservice.deletesection(id);
+    }
+
+    @Patch('/updatesection/:id')
+    updatesection(@Param('id') id : string , @Body() data : CreateSectionDto){
+        console.log("updating section - msg from section module's controller");
+        return this.sectionservice.updatesection(id,data);
+    }
 }

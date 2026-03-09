@@ -52,6 +52,16 @@ export class CourseService {
         )
     }
 
+    deleteassessment(id : string){
+        return this.prismaservice.assessment.delete(
+            {
+                where : {
+                    assessment_id : id,
+                }
+            }
+        )
+    }
+
     createquestion(data : CreateQuestionDTO){
         return this.prismaservice.questions.create(
             {

@@ -52,6 +52,7 @@ const AssessmentBuilder = () => {
   };
   const clearEditing = () => {
     setEditingQuestion(null);
+    setShowForm(false);
   };
 
   const handleUpdateQuestion = (updated: Questions) => {

@@ -3,19 +3,26 @@ import '../../styles/leftsidebar.css'
 interface props {
     modules : CourseModule[];
     onSelectModule : (module : CourseModule) => void;
+    selectedModuleId : string | null;
     onAddModule : () => void
     assessment : null | Assessment;
     onCreateAssessment: ()=>void;
     onDeleteAssessment: (id:string) => void;
+    onEditModule : (module : CourseModule) => void;
+    onDeleteModule : (id : string) => void
 }
 
-const leftsidebar = ({modules,onSelectModule,onAddModule,assessment,onCreateAssessment,onDeleteAssessment}:props) =>{
+const leftsidebar = ({modules,onSelectModule,onAddModule,assessment,onCreateAssessment,onDeleteAssessment,onEditModule,onDeleteModule,selectedModuleId}:props) =>{
     return(
         <aside>
             <h3>Modules</h3>
 
             {modules.map((m) => (
-                <div key={m.module_id} onClick={() => onSelectModule(m)}>{m.module_title}</div>
+                <div key={m.module_id} className={`module-row ${selectedModuleId === m.module_id ? "active-module" : ""}`}>
+                    <span onClick={() => onSelectModule(m)}>{m.module_title}</span>
+                    <button className="edit-btn" onClick={() => onEditModule(m)}>✏</button>
+                    <button className="delete-btn" onClick={() => onDeleteModule(m.module_id)}>🗑</button>
+                </div>
             ))}
             <button onClick={onAddModule}>Add Module</button>
 

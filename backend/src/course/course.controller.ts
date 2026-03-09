@@ -56,4 +56,9 @@ export class CourseController {
         console.log("updating question");
         return await this.courseservice.updatequestion(id,dto);
     }
+    @Delete('deleteassessment/:assessmentId')
+    async deleteassessment(@Param('assessmentId') id : string){
+        console.log("deleting assessment");
+        return await this.courseservice.deleteassessment(id);
+    }
 }

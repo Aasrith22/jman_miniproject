@@ -1,14 +1,17 @@
 import '../../styles/form.css';
-import { useState } from "react";
-import { CreateModuleDto } from "../../types/lms";
-import { createModule } from "../../api/moduleapi";
+import { useState, useEffect } from "react";
+import { CourseModule, CreateModuleDto } from "../../types/lms";
+import { createModule,deleteModule,updateModule } from "../../api/moduleapi";
 
 interface Props {
   courseId: string;
   onSuccess: () => void;
+  editingModule ?: CourseModule | null;
+  onUpdate : (module : CourseModule) => void;
+  clearEditing : () => void;
 }
 
-const ModuleForm = ({ courseId, onSuccess }: Props) => {
+const ModuleForm = ({ courseId, onSuccess,editingModule,onUpdate,clearEditing }: Props) => {
     console.log(courseId);
      
   const [module_title, setTitle] = useState("");
@@ -21,11 +24,22 @@ const ModuleForm = ({ courseId, onSuccess }: Props) => {
       module_description,
       course_id : courseId
     };
-    console.log(data.course_id);
-    await createModule(data);
-    onSuccess();
+    if(editingModule){
+      const updated = await updateModule(editingModule.module_id,data);
+      onUpdate(updated);
+      clearEditing();
+    }
+    else{
+      await createModule(data);
+      onSuccess();
+    }
   };
+  useEffect(() => {
+      if(!editingModule) return;
 
+      setTitle(editingModule.module_title);
+      setDesc(editingModule.module_description);
+    }, [editingModule]);
   return (
     <form onSubmit={handleSubmit}>
       <h2>Add Module</h2>
@@ -39,7 +53,7 @@ const ModuleForm = ({ courseId, onSuccess }: Props) => {
         value={module_description}
         onChange={(e) => setDesc(e.target.value)}
       />
-      <button>Add</button>
+      <button>{editingModule ? "Save Changes" : "Add"}</button>
     </form>
   );
 };

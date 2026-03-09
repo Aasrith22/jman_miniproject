@@ -5,14 +5,20 @@ import { Section } from "../../types/lms";
 interface props {
     sections : Section[];
     onAddSection : () => void;
+    onEditSection : (section : Section) => void;
+    onDeleteSection : (id : string) => void;
 }
 
-const rightsidebar = ({sections,onAddSection} : props) => {
+const rightsidebar = ({sections,onAddSection,onEditSection,onDeleteSection} : props) => {
     return(
         <aside>
             <h3>Sections</h3>
             {sections.map((s) => (
-                <div key={s.section_id} onClick={onAddSection}>{s.section_title}</div>
+                <div className="section-row" key={s.section_id}>
+                    <span>{s.section_title}</span>
+                    <button className="edit-btn" onClick={() => onEditSection(s)}>✏</button>
+                    <button className="delete-btn" onClick={() => onDeleteSection(s.section_id)}>🗑</button>
+                </div>
             ))}
             <button onClick={onAddSection}>Add Section</button>
         </aside>
