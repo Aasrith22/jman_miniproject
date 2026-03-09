@@ -3,9 +3,8 @@ import { useState } from "react";
 import CourseCard from "./CourseCard";
 import CourseDetail from "./CourseDetail";
 
-import { Course  } from "../../Types/course_type";
+import { Course } from "../../Types/course_type";
 import { COURSES } from "../../assets/dymmyData";
-import { IconVideo, IconReading , IconAssignment, IconQuiz } from "../../assets/icons/course_icons";
 
 
 
@@ -16,15 +15,15 @@ export default function StudentCourses() {
   const [filter, setFilter] = useState<"all" | "in-progress" | "completed">("all");
 
   const filteredCourses = COURSES.filter((c) => {
-    if (filter === "completed")   return c.progress === 100;
+    if (filter === "completed") return c.progress === 100;
     if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
     return true;
   });
 
   const stats = {
-    total:       COURSES.length,
-    inProgress:  COURSES.filter((c) => c.progress > 0 && c.progress < 100).length,
-    completed:   COURSES.filter((c) => c.progress === 100).length,
+    total: COURSES.length,
+    inProgress: COURSES.filter((c) => c.progress > 0 && c.progress < 100).length,
+    completed: COURSES.filter((c) => c.progress === 100).length,
     avgProgress: Math.round(COURSES.reduce((s, c) => s + c.progress, 0) / COURSES.length),
   };
 
@@ -47,10 +46,10 @@ export default function StudentCourses() {
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
                 {[
-                  { label: "Enrolled",    value: stats.total,       accent: "#6EE7B7" },
-                  { label: "In Progress", value: stats.inProgress,  accent: "#93C5FD" },
-                  { label: "Completed",   value: stats.completed,   accent: "#FCA5A5" },
-                  { label: "Avg Progress",value: `${stats.avgProgress}%`, accent: "#FDE68A" },
+                  { label: "Enrolled", value: stats.total, accent: "#6EE7B7" },
+                  { label: "In Progress", value: stats.inProgress, accent: "#93C5FD" },
+                  { label: "Completed", value: stats.completed, accent: "#FCA5A5" },
+                  { label: "Avg Progress", value: `${stats.avgProgress}%`, accent: "#FDE68A" },
                 ].map((s) => (
                   <div key={s.label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                     <p className="text-2xl font-extrabold" style={{ color: s.accent, fontFamily: "Syne, sans-serif" }}>

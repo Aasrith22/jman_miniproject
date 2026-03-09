@@ -21,7 +21,6 @@ export interface Course {
   progress: number;
   totalLessons: number;
   completedLessons: number;
-  thumbnail: string;
   accent: string;
   badge: string;
   lastAccessed: string;
