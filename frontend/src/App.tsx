@@ -1,4 +1,5 @@
 import React from 'react';
+<<<<<<< HEAD
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import CourseList from './components/enrollment/course_enrolled/CourseList';
@@ -26,3 +27,13 @@ function App() {
 
 export default App;
 
+=======
+import './App.css';
+import AppRoutes from './routes/AppRoutes';
+
+function App() {
+  return <AppRoutes />;
+}
+
+export default App;
+>>>>>>> bc93bb1031f82fbd76dd90d7cbfbbd977fa7ca79
