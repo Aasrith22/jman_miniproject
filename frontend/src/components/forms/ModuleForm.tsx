@@ -43,11 +43,13 @@ const ModuleForm = ({ courseId, onSuccess,editingModule,onUpdate,clearEditing }:
   return (
     <form onSubmit={handleSubmit}>
       <h2>Add Module</h2>
+      <label>Provide Module Title ...</label>
       <input
         placeholder="Module Title"
         value={module_title}
         onChange={(e) => setTitle(e.target.value)}
       />
+      <label>Provide a brief description about the module ...</label>
       <textarea
         placeholder="Module Description"
         value={module_description}

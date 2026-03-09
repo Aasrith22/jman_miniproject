@@ -77,18 +77,15 @@ const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdat
         onChange={(e) => setQuestionText(e.target.value)}
       />
       <label>Provide all 4 oprions for the question below ...</label>
-      {options.map((opt, i) => (
-        <input
+      <div className="options-grid">
+        {options.map((opt, i) => (
+          <input
           key={i}
           placeholder={`Option ${i + 1}`}
           value={opt}
-          onChange={(e) => {
-            const newOptions = [...options];
-            newOptions[i] = e.target.value;
-            setOptions(newOptions);
-          }}
-        />
-      ))}
+          onChange={(e) => {const newOptions = [...options]; newOptions[i] = e.target.value; setOptions(newOptions);}}/>))
+        }
+      </div>
       <h2>Select Correct Option</h2>
       <select
         value={correctIndex}
