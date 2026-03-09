@@ -15,10 +15,6 @@ const CourseCard = ({ course, onClick }: { course: Course; onClick: () => void }
 
     <div className="p-5 relative">
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-          style={{ background: `${course.accent}20` }}>
-          {course.thumbnail}
-        </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
             <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${badgeStyle(course.badge)}`}>

@@ -7,7 +7,7 @@ import ModuleAccordion from './ModuleAccordion';
 
 const CourseDetail = ({ course, onBack }: { course: Course; onBack: () => void }) => {
   const totalLessons = course.modules.reduce((s, m) => s + m.lessons.length, 0);
-  const doneLessons  = course.modules.reduce((s, m) => s + m.lessons.filter((l) => l.completed).length, 0);
+  const doneLessons = course.modules.reduce((s, m) => s + m.lessons.filter((l) => l.completed).length, 0);
 
   return (
     <div className="animate-slideIn">
@@ -26,7 +26,7 @@ const CourseDetail = ({ course, onBack }: { course: Course; onBack: () => void }
         </button>
 
         <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-          <div className="text-5xl">{course.thumbnail}</div>
+
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="text-xs font-medium px-2.5 py-0.5 rounded-full border"
