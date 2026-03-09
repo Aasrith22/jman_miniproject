@@ -10,7 +10,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
+  
 }
 
 enum Role {
@@ -24,11 +25,11 @@ enum QuestionType {
 }
 
 model User {
-  user_id     String   @id @default(uuid())
-  user_role   Role     @default(STUDENT)
-  full_name   String
-  email       String   @unique
-  password    String
+  user_id   String @id @default(uuid())
+  user_role Role   @default(STUDENT)
+  full_name String
+  email     String @unique
+  password  String
 
   courses_taught      Course[]             @relation("InstructorCourses")
   enrolled_courses    Enrollment[]         
@@ -39,14 +40,14 @@ model User {
 }
 
 model Course {
-  course_id        String       @id @default(uuid())
-  course_name      String
-  technology       String
-  created_at       DateTime     @default(now())
+  course_id   String   @id @default(uuid())
+  course_name String
+  technology  String
+  created_at  DateTime @default(now())
 
 
   fk_instructor_id String
-  instructor       User         @relation("InstructorCourses", fields: [fk_instructor_id], references: [user_id], onDelete: Cascade)
+  instructor       User   @relation("InstructorCourses", fields: [fk_instructor_id], references: [user_id], onDelete: Cascade)
 
   
   modules           CourseModule[]
@@ -73,7 +74,7 @@ model CourseModule {
 }
 
 model Section {
-  section_id        String   @id @default(uuid())
+  section_id        String  @id @default(uuid())
   section_title     String
   section_content   String?
   section_images    String?
@@ -81,7 +82,7 @@ model Section {
   content_url       String?
   url_description   String?
 
-  created_at        DateTime @default(now())
+  created_at DateTime @default(now())
 
   
   module_id         String

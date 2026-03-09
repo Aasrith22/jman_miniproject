@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -7,9 +8,22 @@ import { AuthModule } from './auth/auth.module';
 import { CourseModule } from './course/course.module';
 import { CoursemoduleModule } from './coursemodule/coursemodule.module';
 import { SectionModule } from './section/section.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { CoursesController } from './course_enrollment/courses.controller';
+import { CoursesService } from './course_enrollment/courses.service';
+
 @Module({
-  imports: [UserModule, PrismaModule, AuthModule, CourseModule, CoursemoduleModule, SectionModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    UserModule,
+    PrismaModule,
+    AuthModule,
+    CourseModule,
+    CoursemoduleModule,
+    SectionModule,
+    DashboardModule,
+  ],
+  controllers: [AppController, CoursesController],
+  providers: [AppService, CoursesService],
 })
 export class AppModule {}
+

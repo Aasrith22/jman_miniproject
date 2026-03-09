@@ -28,13 +28,14 @@ export default function AppRoutes() {
       />
 
       <Route
-        path="/student"
+        path="/student/*"
         element={
           <ProtectedRoute user_role="STUDENT">
             <StudentDashboard />
           </ProtectedRoute>
         }
-      />
+       />
+      {/* analytics is now handled inside StudentDashboard's nested routes */}
       <Route
           path="/instructor/:instructorId/course/create"
           element={<CourseForm />}
@@ -51,6 +52,7 @@ export default function AppRoutes() {
           path="/assessment/:assessmentId"
           element={<AssessmentBuilder/>}
         />
+      
     </Routes>
   );
 }
