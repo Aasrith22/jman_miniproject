@@ -33,8 +33,8 @@ const CenterPanel = ({
     <main className="center-panel">
       {!activeForm && (
         <div className="placeholder">
-          <h2>Select an action</h2>
-          <p>Add a module or select a module to add sections</p>
+          <h2 style={{ textAlign: "center", marginBottom: "8px", color: "#374151" }}>Select an action</h2>
+          <p style={{ textAlign: "center", color: "#6b7280", fontSize: "15px" }}>Add a module or select a module to add sections</p>
         </div>
       )}
 

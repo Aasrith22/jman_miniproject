@@ -1,4 +1,4 @@
-import '../../styles/form.css';
+import '../../styles/assessmentform.css';
 import { useState } from "react";
 import { CreateAssessmentDTO } from "../../types/lms";
 import { createAssessment } from "../../api/assessmentapi";
@@ -30,14 +30,36 @@ const CourseForm = () => {
         navigate(`/assessment/${res.assessment_id}`)
     }
     return(
-        <form onSubmit={handleSubmit}>
-            <h2>Create Assessment</h2>
-            <input placeholder="Assessment Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
-            <input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
-            <input placeholder='Passing Score (*/100)' value={passingscore} onChange={(e) => setPassingScore(Number(e.target.value))}/>
-            <button type="submit">Create</button>
-        </form>
-    )
+  <div className="assessment-form-wrapper">
+
+    <form className="assessment-form" onSubmit={handleSubmit}>
+
+      <h2>Create Assessment</h2>
+
+      <input
+        placeholder="Assessment Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+
+      <input
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+
+      <input
+        placeholder="Passing Score (*/100)"
+        value={passingscore}
+        onChange={(e) => setPassingScore(Number(e.target.value))}
+      />
+
+      <button type="submit">Create</button>
+
+    </form>
+
+  </div>
+)
 }
 
 export default CourseForm;

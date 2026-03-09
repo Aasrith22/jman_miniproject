@@ -70,13 +70,13 @@ const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdat
     <main className="question-form">
 
       <h2>Add Question</h2>
-
+      <label>Enter the Question here...</label>
       <input
         placeholder="Question Text"
         value={questionText}
         onChange={(e) => setQuestionText(e.target.value)}
       />
-
+      <label>Provide all 4 oprions for the question below ...</label>
       {options.map((opt, i) => (
         <input
           key={i}

@@ -11,7 +11,7 @@ interface props {
 
 const rightsidebar = ({sections,onAddSection,onEditSection,onDeleteSection} : props) => {
     return(
-        <aside>
+        <aside className='right-sidebar'>
             <h3>Sections</h3>
             {sections.map((s) => (
                 <div className="section-row" key={s.section_id}>
@@ -20,7 +20,7 @@ const rightsidebar = ({sections,onAddSection,onEditSection,onDeleteSection} : pr
                     <button className="delete-btn" onClick={() => onDeleteSection(s.section_id)}>🗑</button>
                 </div>
             ))}
-            <button onClick={onAddSection}>Add Section</button>
+            <button className="add-section-btn" onClick={onAddSection}>Add Section</button>
         </aside>
     )
 }

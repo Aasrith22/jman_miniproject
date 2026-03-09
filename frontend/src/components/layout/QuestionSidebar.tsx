@@ -37,7 +37,7 @@ const QuestionSidebar = ({questions, onAddQuestion, onDeleteQuestion, onEditQues
         </div>
       ))}
 
-      <button onClick={onAddQuestion}>Add Question</button>
+      <button className="add-question-btn" onClick={onAddQuestion}>Add Question</button>
 
     </aside>
   )

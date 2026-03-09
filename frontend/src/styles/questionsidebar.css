@@ -1,82 +1,90 @@
+/* MAIN SIDEBAR */
 .question-sidebar {
+  width: 300px;
   height: 100vh;
-  width : 260px;
-  border-right: 2px solid black;
-  padding: 20px;
+  padding: 28px 22px;
+  background: #ffffff;
+  border-left: 2px solid black;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
 }
 
+/* HEADER */
 .question-sidebar h3 {
   margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #374151;
 }
 
-/* question items */
-
-.question-sidebar div {
-  border: 1px solid black;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-/* button */
-
-.question-sidebar button {
-  margin-top: auto;
-  padding: 10px;
-  color: black;
-  border: 2px solid black;
-  background: white;
-  cursor: pointer;
-}
+/* QUESTION ROW */
 .question-item {
   display: flex;
-  justify-content: space-between;
+  width: 90%;
   align-items: center;
-
+  justify-content: space-between;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  border-radius: 6px;
   border: 1px solid black;
-  padding: 8px;
-  margin-bottom: 10px;
+  background: #f9fafb;
+  transition: 0.2s;
 }
 
+.question-item:hover {
+  background: #eef2ff;
+}
+
+/* QUESTION TEXT */
 .question-text {
   flex: 1;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.delete-btn {
-  width: 28px;
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 1px solid black;
-  border-radius: 50%;
-
-  background: white;
-  cursor: pointer;
-  padding: 0;
-}
-.question-actions{
-  display:flex;
-  gap:6px;
-}
-
+/* EDIT DELETE BUTTONS */
 .edit-btn,
-.delete-btn{
-  width:26px;
-  height:26px;
+.delete-btn {
+  background: #ffffff;
+  border: 1px solid black;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  margin-left: 6px;
+  border-radius: 4px;
+  transition: 0.2s;
+}
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.edit-btn:hover {
+  background: #dbeafe;
+}
 
-  border:1px solid black;
-  border-radius:50%;
-  background:white;
-  cursor:pointer;
-  padding:0;
+.delete-btn:hover {
+  background: #fee2e2;
+}
+
+/* ADD QUESTION BUTTON */
+.add-question-btn {
+  width: 90%;
+  padding: 12px;
+  margin-top: 16px;
+  background: #dbeafe;
+  border: 2px solid black;
+  border-radius: 6px;
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-question-btn:hover {
+  background: #bfdbfe;
 }
