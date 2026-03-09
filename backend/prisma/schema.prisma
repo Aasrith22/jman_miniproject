@@ -10,12 +10,21 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+<<<<<<< HEAD
   url      = env("DATABASE_URL")
+=======
+  url = env("DATABASE_URL")
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 }
 
 enum Role {
   STUDENT
   INSTRUCTOR
+}
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
 }
 
 model User {
@@ -25,10 +34,17 @@ model User {
   email     String @unique
   password  String
 
+<<<<<<< HEAD
   // Relations
   courses_taught   Course[]     @relation("InstructorCourses")
   enrolled_courses Enrollment[] // all courses the user is enrolled in
   attempts         Attempt[]
+=======
+  courses_taught      Course[]             @relation("InstructorCourses")
+  enrolled_courses    Enrollment[]         
+  module_completions  ModuleCompletion[]   
+  assessment_attempts AssessmentAttempt[]  
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
   @@map("users")
 }
@@ -39,19 +55,27 @@ model Course {
   technology  String
   created_at  DateTime @default(now())
 
-  // Foreign Key
+
   fk_instructor_id String
   instructor       User   @relation("InstructorCourses", fields: [fk_instructor_id], references: [user_id], onDelete: Cascade)
 
+<<<<<<< HEAD
   // Relations
   modules           CourseModule[]
   enrolled_students Enrollment[] // all students enrolled
   assessments       Assessment[]
+=======
+  
+  modules           CourseModule[]
+  enrolled_students Enrollment[]  
+  assessment        Assessment?   
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
   @@map("courses")
 }
 
 model CourseModule {
+<<<<<<< HEAD
   module_id          String @id @default(uuid())
   module_title       String
   module_description String
@@ -63,6 +87,19 @@ model CourseModule {
   // Relations
   sections   Section[]
   assessment Assessment?
+=======
+  module_id          String   @id @default(uuid())
+  module_title       String
+  module_description String
+
+  
+  fk_course_id  String
+  course        Course   @relation(fields: [fk_course_id], references: [course_id], onDelete: Cascade)
+
+  
+  sections    Section[]
+  completions ModuleCompletion[]  
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
   @@map("course_modules")
 }
@@ -71,33 +108,54 @@ model Section {
   section_id        String  @id @default(uuid())
   section_title     String
   section_content   String?
+<<<<<<< HEAD
   section_images    String? // store image URL
+=======
+  section_images    String?
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
   image_description String?
   content_url       String?
   url_description   String?
 
   created_at DateTime @default(now())
 
+<<<<<<< HEAD
   // Foreign Key
   module_id String
   module    CourseModule @relation(fields: [module_id], references: [module_id], onDelete: Cascade)
+=======
+  
+  module_id         String
+  module            CourseModule @relation(fields: [module_id], references: [module_id], onDelete: Cascade)
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
   @@map("sections")
 }
 
 model Enrollment {
+<<<<<<< HEAD
   user_id     String
   course_id   String
   enrolled_at DateTime @default(now())
+=======
+  entrollment_id String   @id @default(uuid())
+  user_id        String
+  course_id      String
+  enrolled_at    DateTime @default(now())
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
-  // Relations
+
+  progress       Float    @default(0) 
+
+  
   student User   @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   course  Course @relation(fields: [course_id], references: [course_id], onDelete: Cascade)
 
-  @@id([user_id, course_id]) // Composite PK ensures no duplicate enrollment
+  @@unique([user_id, course_id]) 
   @@map("enrollments")
 }
 
+<<<<<<< HEAD
 enum QuestionType {
   MCQ_SINGLE
   MCQ_MULTIPLE
@@ -122,10 +180,43 @@ model Assessment {
 
   questions Question[]
   attempts  Attempt[]
+=======
+
+model ModuleCompletion {
+  completion_id String   @id @default(uuid())
+  user_id       String
+  module_id     String
+  completed_at  DateTime @default(now())
+
+  
+  student User         @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  module  CourseModule @relation(fields: [module_id], references: [module_id], onDelete: Cascade)
+
+  @@unique([user_id, module_id]) 
+  @@map("module_completions")
+}
+
+
+model Assessment {
+  assessment_id   String   @id @default(uuid())
+  title           String
+  description     String?
+  passing_score   Float    @default(50) 
+  created_at      DateTime @default(now())
+
+  
+  fk_course_id    String   @unique  
+  course          Course   @relation(fields: [fk_course_id], references: [course_id], onDelete: Cascade)
+
+  
+  questions Questions[]
+  attempts  AssessmentAttempt[]
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
   @@map("assessments")
 }
 
+<<<<<<< HEAD
 model Question {
   question_id    String       @id @default(uuid())
   question_text  String
@@ -138,10 +229,26 @@ model Question {
 
   options        Option[]
   attemptAnswers AttemptAnswer[]
+=======
+model Questions {
+  question_id   String       @id @default(uuid())
+  question_text String
+  question_type QuestionType @default(MULTIPLE_CHOICE)
+  points        Int          @default(1)
+
+  
+  fk_assessment_id String
+  assessment       Assessment @relation(fields: [fk_assessment_id], references: [assessment_id], onDelete: Cascade)
+
+  
+  choices  QuestionChoice[]  
+  answers  StudentAnswer[]
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
   @@map("questions")
 }
 
+<<<<<<< HEAD
 model Option {
   option_id   String  @id @default(uuid())
   option_text String
@@ -184,3 +291,56 @@ model AttemptAnswer {
 
   @@map("attempt_answers")
 }
+=======
+
+model QuestionChoice {
+  choice_id   String  @id @default(uuid())
+  choice_text String
+  is_correct  Boolean @default(false)
+
+  
+  fk_question_id String
+  question       Questions @relation(fields: [fk_question_id], references: [question_id], onDelete: Cascade)
+
+  
+  student_answers StudentAnswer[]
+
+  @@map("question_choices")
+}
+
+
+model AssessmentAttempt {
+  attempt_id    String   @id @default(uuid())
+  score         Float    @default(0)   
+  passed        Boolean  @default(false)
+  attempted_at  DateTime @default(now())
+
+  fk_user_id       String
+  fk_assessment_id String
+
+  student    User       @relation(fields: [fk_user_id], references: [user_id], onDelete: Cascade)
+  assessment Assessment @relation(fields: [fk_assessment_id], references: [assessment_id], onDelete: Cascade)
+
+  
+  answers StudentAnswer[]
+
+  @@map("assessment_attempts")
+}
+
+
+model StudentAnswer {
+  answer_id     String  @id @default(uuid())
+  text_answer   String? 
+
+
+  fk_attempt_id  String
+  fk_question_id String
+  fk_choice_id   String? 
+
+  attempt  AssessmentAttempt @relation(fields: [fk_attempt_id], references: [attempt_id], onDelete: Cascade)
+  question Questions         @relation(fields: [fk_question_id], references: [question_id], onDelete: Cascade)
+  choice   QuestionChoice?   @relation(fields: [fk_choice_id], references: [choice_id], onDelete: SetNull)
+
+  @@map("student_answers")
+}
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a

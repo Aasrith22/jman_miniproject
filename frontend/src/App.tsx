@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+<<<<<<< HEAD
 import {
   fetchOverview,
   fetchCourseStats,
@@ -17,6 +18,11 @@ import CourseTable from './components/CourseTable';
 import AssessmentTable from './components/AssessmentTable';
 import StudentTable from './components/StudentTable';
 import RecentAttempts from './components/RecentAttempts';
+=======
+import Login from './pages/Login';
+import AppRoutes from './routes/AppRoutes';
+import UsersPage from './pages/UsersPage';
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
 
 function App() {
   const [overview, setOverview] = useState<OverviewStats | null>(null);
@@ -50,6 +56,7 @@ function App() {
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
+<<<<<<< HEAD
     <div className="dashboard">
       <h1>LMS Analytics Dashboard</h1>
       {overview && <OverviewCards data={overview} />}
@@ -58,6 +65,11 @@ function App() {
       <StudentTable data={students} />
       <RecentAttempts data={recentAttempts} />
     </div>
+=======
+    <>
+      <AppRoutes/>
+    </>
+>>>>>>> b0cc7eb311991362938ed087c7ff9f4dcad9f02a
   );
 }
 
