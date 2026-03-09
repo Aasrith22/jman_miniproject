@@ -9,7 +9,7 @@ export default function AssessmentCompletionHeader() {
                     { label: "Marks", value: "100 / 100" },
                 ].map((stat) => (
                     <div key={stat.label} className="bg-white/5 rounded-xl p-3 text-center">
-                        <p className="text-lg font-bold text-white text-green-500">{stat.value}</p>
+                        <p className="text-lg font-bold text-green-500">{stat.value}</p>
                         <p className="text-xs text-white/40 mt-0.5">{stat.label}</p>
                     </div>
                 ))}
