@@ -1,13 +1,22 @@
 import React from 'react';
-import Header from './components/Header';
 import StudentCourses from './components/StudentMyCourse/StudentCourses';
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AssessmentModule from './components/CourseAssessment/AssessmentModule';
+import MyCourseLayout from './components/MyCourseLayout';
 
 function App() {
   return (
     <>
-      <Header/>
-      <StudentCourses/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MyCourseLayout />}>
+            <Route path='mycourse' element={<StudentCourses />} />
+            <Route path="mycourse/assessment" element={<AssessmentModule />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+
+
     </>
   );
 }
