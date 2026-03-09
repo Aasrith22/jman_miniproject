@@ -1,0 +1,27 @@
+.question-form {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.question-form h2 {
+  margin-bottom: 10px;
+}
+
+.question-form input {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.question-form select {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.question-form button {
+  padding: 10px;
+  border: 2px solid black;
+  background: white;
+  cursor: pointer;
+}
