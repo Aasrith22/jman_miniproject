@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import CourseList from './course_enrolled/CourseList';
-import Navbar from './components/Navbar';
-import ProfilePage from './components/ProfilePage';
-import EnrollmentPage from './enrollement_frontend/Enrollmentpage';
+import CourseList from './components/enrollment/course_enrolled/CourseList';
+import Navbar from './components/enrollment/Navbar';
+import ProfilePage from './components/enrollment/ProfilePage';
+import EnrollmentPage from './components/enrollment/enrollement_frontend/Enrollmentpage';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
