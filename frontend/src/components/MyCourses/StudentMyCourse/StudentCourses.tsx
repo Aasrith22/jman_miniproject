@@ -7,13 +7,13 @@ import { Course } from "../../../Types/course_type";
 import { COURSES } from "../../../assets/dymmyData";
 import Header from "../../Header";
 
-
-
-
+import { useMyEnrolledCourses } from "../../../api/hooks/useCourses";
 
 export default function StudentCourses() {
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const [filter, setFilter] = useState<"all" | "in-progress" | "completed">("all");
+  const [filter, setFilter] = useState<"all" | "in-progress" | "completed">(
+    "all"
+  );
 
   const filteredCourses = COURSES.filter((c) => {
     if (filter === "completed") return c.progress === 100;
@@ -23,16 +23,34 @@ export default function StudentCourses() {
 
   const stats = {
     total: COURSES.length,
-    inProgress: COURSES.filter((c) => c.progress > 0 && c.progress < 100).length,
+    inProgress: COURSES.filter((c) => c.progress > 0 && c.progress < 100)
+      .length,
     completed: COURSES.filter((c) => c.progress === 100).length,
-    avgProgress: Math.round(COURSES.reduce((s, c) => s + c.progress, 0) / COURSES.length),
+    avgProgress: Math.round(
+      COURSES.reduce((s, c) => s + c.progress, 0) / COURSES.length
+    ),
   };
 
+  const { data, isLoading } = useMyEnrolledCourses();
+  if (isLoading) return <h1>Loading...</h1>;
+  console.log(data);
+  const avg_progress =
+    (data?.enrollments ?? []).reduce(
+      (sum, course) => sum + course.progress,
+      0
+    ) / (data?.enrollments?.length || 1);
+  const in_progress =
+    (data?.enrollments ?? []).reduce(
+      (sum, course) => course.progress < 100 ? sum + 1 : sum ,
+      0
+    ) ;
   return (
     <>
-
       {selectedCourse ? (
-        <CourseDetail course={selectedCourse} onBack={() => setSelectedCourse(null)} />
+        <CourseDetail
+          course={selectedCourse}
+          onBack={() => setSelectedCourse(null)}
+        />
       ) : (
         <div className="animate-slideIn">
           <div className="mb-8">
@@ -44,13 +62,27 @@ export default function StudentCourses() {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
             {[
-              { label: "Enrolled", value: stats.total, accent: "#6EE7B7" },
-              { label: "In Progress", value: stats.inProgress, accent: "#93C5FD" },
-              { label: "Completed", value: stats.completed, accent: "#FCA5A5" },
-              { label: "Avg Progress", value: `${stats.avgProgress}%`, accent: "#FDE68A" },
+              { label: "Enrolled", value: data?.total, accent: "#6EE7B7" },
+              {
+                label: "In Progress",
+                value: in_progress,
+                accent: "#93C5FD",
+              },
+              { label: "Completed", value:  (data?.total ?? 0) - in_progress, accent: "#FCA5A5" },
+              {
+                label: "Avg Progress",
+                value: `${avg_progress.toFixed(2)}%`,
+                accent: "#FDE68A",
+              },
             ].map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-2xl font-extrabold" style={{ color: s.accent, fontFamily: "Syne, sans-serif" }}>
+              <div
+                key={s.label}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+              >
+                <p
+                  className="text-2xl font-extrabold"
+                  style={{ color: s.accent, fontFamily: "Syne, sans-serif" }}
+                >
                   {s.value}
                 </p>
                 <p className="text-xs text-white/40 mt-0.5">{s.label}</p>
@@ -64,10 +96,11 @@ export default function StudentCourses() {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all
-                      ${filter === f
-                    ? "bg-white text-[#080c14]"
-                    : "bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-white/80"
-                  }`}
+                      ${
+                        filter === f
+                          ? "bg-white text-[#080c14]"
+                          : "bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-white/80"
+                      }`}
               >
                 {f === "all" ? "All Courses" : f.replace("-", " ")}
               </button>

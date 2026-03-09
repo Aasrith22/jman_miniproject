@@ -3,6 +3,8 @@ import StudentCourses from './components/MyCourses/StudentMyCourse/StudentCourse
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AssessmentModule from './components/MyCourses/CourseAssessment/AssessmentModule';
 import MyCourseLayout from './components/MyCourseLayout';
+import Login from './components/AuthTesting/Login';
+import Register from './components/AuthTesting/Register';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
           <Route path="/" element={<MyCourseLayout />}>
             <Route path='mycourse' element={<StudentCourses />} />
             <Route path="mycourse/assessment" element={<AssessmentModule />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
           </Route>
         </Routes>
       </BrowserRouter>
