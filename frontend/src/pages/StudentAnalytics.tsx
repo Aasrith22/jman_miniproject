@@ -14,7 +14,7 @@ import {
 import OverviewCards from '../components/StudentAnalytics/OverviewCards';
 import CourseTable from '../components/StudentAnalytics/CourseTable';
 import AssessmentTable from '../components/StudentAnalytics/AssessmentTable';
-import StudentTable from '../components/StudentAnalytics/StudentTable';
+
 import RecentAttempts from '../components/StudentAnalytics/RecentAttempts';
 
 export default function StudentAnalytics() {
@@ -54,7 +54,7 @@ export default function StudentAnalytics() {
       {overview && <OverviewCards data={overview} />}
       <CourseTable data={courses} />
       <AssessmentTable data={assessments} />
-      <StudentTable data={students} />
+     
       <RecentAttempts data={recentAttempts} />
     </div>
   );

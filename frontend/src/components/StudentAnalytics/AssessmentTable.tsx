@@ -13,26 +13,22 @@ const AssessmentTable: React.FC<Props> = ({ data }) => {
                 <thead>
                     <tr>
                         <th>Assessment</th>
-                        <th>Module</th>
                         <th>Course</th>
-                        <th>Total Marks</th>
-                        <th>Attempts</th>
-                        <th>Avg Score</th>
-                        <th>Highest</th>
-                        <th>Lowest</th>
+                        <th>Passing Score</th>
+                        <th>Score</th>
+                        <th>Passed</th>
+                        <th>Attempted At</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((a) => (
-                        <tr key={a.assessmentId}>
+                        <tr key={a.attemptId}>
                             <td>{a.title}</td>
-                            <td>{a.moduleName}</td>
                             <td>{a.courseName}</td>
-                            <td>{a.totalMarks ?? '—'}</td>
-                            <td>{a.totalAttempts}</td>
-                            <td>{a.avgScore ?? '—'}</td>
-                            <td>{a.highestScore ?? '—'}</td>
-                            <td>{a.lowestScore ?? '—'}</td>
+                            <td>{a.passingScore}</td>
+                            <td>{a.score ?? '—'}</td>
+                            <td>{a.passed ? 'Yes' : 'No'}</td>
+                            <td>{new Date(a.attemptedAt).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>

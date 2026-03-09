@@ -15,7 +15,6 @@ const CourseTable: React.FC<Props> = ({ data }) => {
                         <th>Course</th>
                         <th>Technology</th>
                         <th>Instructor</th>
-                        <th>Enrollments</th>
                         <th>Modules</th>
                         <th>Avg Score</th>
                     </tr>
@@ -26,7 +25,6 @@ const CourseTable: React.FC<Props> = ({ data }) => {
                             <td>{c.courseName}</td>
                             <td>{c.technology}</td>
                             <td>{c.instructor}</td>
-                            <td>{c.enrollmentCount}</td>
                             <td>{c.moduleCount}</td>
                             <td>{c.avgScore ?? '—'}</td>
                         </tr>

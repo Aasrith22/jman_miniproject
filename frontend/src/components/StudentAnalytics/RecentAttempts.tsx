@@ -15,8 +15,8 @@ const RecentAttempts: React.FC<Props> = ({ data }) => {
                         <th>Student</th>
                         <th>Assessment</th>
                         <th>Score</th>
-                        <th>Started</th>
-                        <th>Completed</th>
+                        <th>Passed</th>
+                        <th>Attempted At</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,8 +25,8 @@ const RecentAttempts: React.FC<Props> = ({ data }) => {
                             <td>{a.studentName}</td>
                             <td>{a.assessmentTitle}</td>
                             <td>{a.score ?? '—'}</td>
-                            <td>{new Date(a.startedAt).toLocaleString()}</td>
-                            <td>{a.completedAt ? new Date(a.completedAt).toLocaleString() : 'In Progress'}</td>
+                            <td>{a.passed ? 'Yes' : 'No'}</td>
+                            <td>{new Date(a.attemptedAt).toLocaleString()}</td>
                         </tr>
                     ))}
                 </tbody>

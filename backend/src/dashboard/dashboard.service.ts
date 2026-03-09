@@ -5,79 +5,89 @@ import { PrismaService } from '../prisma/prisma.service';
 export class DashboardService {
     constructor(private prisma: PrismaService) { }
 
-    async getOverviewStats() {
-        const [totalStudents, totalCourses, totalEnrollments, totalAssessments] =
+    async getOverviewStats(userId: string) {
+        const [coursesEnrolled, assessmentsAttempted, moduleCompletions, attempts] =
             await Promise.all([
-                this.prisma.user.count({ where: { user_role: 'STUDENT' } }),
-                this.prisma.course.count(),
-                this.prisma.enrollment.count(),
-                this.prisma.assessment.count(),
+                this.prisma.enrollment.count({ where: { user_id: userId } }),
+                this.prisma.assessmentAttempt.count({ where: { fk_user_id: userId } }),
+                this.prisma.moduleCompletion.count({ where: { user_id: userId } }),
+                this.prisma.assessmentAttempt.findMany({
+                    where: { fk_user_id: userId },
+                    select: { score: true },
+                }),
             ]);
 
-        return { totalStudents, totalCourses, totalEnrollments, totalAssessments };
+        const scores = attempts.filter(a => a.score !== null).map(a => a.score as number);
+        const avgScore = scores.length > 0
+            ? Math.round((scores.reduce((s, v) => s + v, 0) / scores.length) * 100) / 100
+            : null;
+
+        return { coursesEnrolled, assessmentsAttempted, moduleCompletions, avgScore };
     }
 
-    async getCourseStats() {
-        const courses = await this.prisma.course.findMany({
+    async getCourseStats(userId: string) {
+        const enrollments = await this.prisma.enrollment.findMany({
+            where: { user_id: userId },
             include: {
-                instructor: { select: { full_name: true } },
-                enrolled_students: true,
-                modules: true,
-                assessment: {
+                course: {
                     include: {
-                        attempts: { select: { score: true } },
+                        instructor: { select: { full_name: true } },
+                        modules: true,
+                        assessment: {
+                            include: {
+                                attempts: {
+                                    where: { fk_user_id: userId },
+                                    select: { score: true },
+                                },
+                            },
+                        },
                     },
                 },
             },
         });
 
-        return courses.map((course) => {
-            const allScores = course.assessment?.attempts
+        return enrollments.map((enrollment) => {
+            const course = enrollment.course;
+            const scores = course.assessment?.attempts
                 .filter((t) => t.score !== null)
                 .map((t) => t.score as number) || [];
-            const avgScore =
-                allScores.length > 0
-                    ? Math.round((allScores.reduce((s, v) => s + v, 0) / allScores.length) * 100) / 100
-                    : null;
+            const avgScore = scores.length > 0
+                ? Math.round((scores.reduce((s, v) => s + v, 0) / scores.length) * 100) / 100
+                : null;
 
             return {
                 courseId: course.course_id,
                 courseName: course.course_name,
                 technology: course.technology,
                 instructor: course.instructor.full_name,
-                enrollmentCount: course.enrolled_students.length,
                 moduleCount: course.modules.length,
                 avgScore,
             };
         });
     }
 
-    async getAssessmentPerformance() {
-        const assessments = await this.prisma.assessment.findMany({
+    async getAssessmentPerformance(userId: string) {
+        const attempts = await this.prisma.assessmentAttempt.findMany({
+            where: { fk_user_id: userId },
             include: {
-                course: { select: { course_name: true } },
-                attempts: { select: { score: true } },
+                assessment: {
+                    include: {
+                        course: { select: { course_name: true } },
+                    },
+                },
             },
         });
 
-        return assessments.map((a) => {
-            const scores = a.attempts
-                .filter((t) => t.score !== null)
-                .map((t) => t.score as number);
-
-            return {
-                assessmentId: a.assessment_id,
-                title: a.title,
-                courseName: a.course.course_name,
-                passingScore: a.passing_score,
-                totalAttempts: a.attempts.length,
-                avgScore: scores.length > 0
-                    ? Math.round((scores.reduce((s, v) => s + v, 0) / scores.length) * 100) / 100
-                    : null,
-                highestScore: scores.length > 0 ? Math.max(...scores) : null,
-                lowestScore: scores.length > 0 ? Math.min(...scores) : null,
-            };
-        });
+        return attempts.map((a) => ({
+            attemptId: a.attempt_id,
+            assessmentId: a.assessment.assessment_id,
+            title: a.assessment.title,
+            courseName: a.assessment.course.course_name,
+            passingScore: a.assessment.passing_score,
+            score: a.score,
+            passed: a.passed,
+            attemptedAt: a.attempted_at,
+        }));
     }
 
     async getStudentPerformance() {
@@ -107,8 +117,9 @@ export class DashboardService {
         });
     }
 
-    async getRecentAttempts() {
+    async getRecentAttempts(userId: string) {
         const attempts = await this.prisma.assessmentAttempt.findMany({
+            where: { fk_user_id: userId },
             orderBy: { attempted_at: 'desc' },
             take: 10,
             include: {

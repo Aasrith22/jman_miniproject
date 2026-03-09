@@ -7,10 +7,10 @@ interface Props {
 
 const OverviewCards: React.FC<Props> = ({ data }) => {
     const cards = [
-        { label: 'Students', value: data.totalStudents, color: '#4f46e5' },
-        { label: 'Courses', value: data.totalCourses, color: '#059669' },
-        { label: 'Enrollments', value: data.totalEnrollments, color: '#d97706' },
-        { label: 'Assessments', value: data.totalAssessments, color: '#dc2626' },
+        { label: 'Courses Enrolled', value: data.coursesEnrolled, color: '#4f46e5' },
+        { label: 'Assessments Attempted', value: data.assessmentsAttempted, color: '#059669' },
+        { label: 'Modules Completed', value: data.moduleCompletions, color: '#d97706' },
+        { label: 'Avg Score', value: data.avgScore ?? '—', color: '#dc2626' },
     ];
 
     return (

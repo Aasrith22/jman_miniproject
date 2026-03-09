@@ -1,23 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { DashboardService } from './dashboard.service';
 
 @Controller('api/dashboard')
+@UseGuards(AuthGuard('jwt'))
 export class DashboardController {
     constructor(private dashboardService: DashboardService) { }
 
     @Get('overview')
-    getOverview() {
-        return this.dashboardService.getOverviewStats();
+    getOverview(@Req() req: any) {
+        return this.dashboardService.getOverviewStats(req.user.userId);
     }
 
     @Get('courses')
-    getCourseStats() {
-        return this.dashboardService.getCourseStats();
+    getCourseStats(@Req() req: any) {
+        return this.dashboardService.getCourseStats(req.user.userId);
     }
 
     @Get('assessments')
-    getAssessmentPerformance() {
-        return this.dashboardService.getAssessmentPerformance();
+    getAssessmentPerformance(@Req() req: any) {
+        return this.dashboardService.getAssessmentPerformance(req.user.userId);
     }
 
     @Get('students')
@@ -26,7 +28,7 @@ export class DashboardController {
     }
 
     @Get('recent-attempts')
-    getRecentAttempts() {
-        return this.dashboardService.getRecentAttempts();
+    getRecentAttempts(@Req() req: any) {
+        return this.dashboardService.getRecentAttempts(req.user.userId);
     }
 }

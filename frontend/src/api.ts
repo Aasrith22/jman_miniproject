@@ -1,10 +1,10 @@
 const BASE_URL = 'http://localhost:3000/api';
 
 export interface OverviewStats {
-    totalStudents: number;
-    totalCourses: number;
-    totalEnrollments: number;
-    totalAssessments: number;
+    coursesEnrolled: number;
+    assessmentsAttempted: number;
+    moduleCompletions: number;
+    avgScore: number | null;
 }
 
 export interface CourseStat {
@@ -12,21 +12,19 @@ export interface CourseStat {
     courseName: string;
     technology: string;
     instructor: string;
-    enrollmentCount: number;
     moduleCount: number;
     avgScore: number | null;
 }
 
 export interface AssessmentStat {
+    attemptId: string;
     assessmentId: string;
     title: string;
-    moduleName: string;
     courseName: string;
-    totalMarks: number | null;
-    totalAttempts: number;
-    avgScore: number | null;
-    highestScore: number | null;
-    lowestScore: number | null;
+    passingScore: number;
+    score: number | null;
+    passed: boolean;
+    attemptedAt: string;
 }
 
 export interface StudentStat {
@@ -43,12 +41,17 @@ export interface RecentAttempt {
     studentName: string;
     assessmentTitle: string;
     score: number | null;
-    startedAt: string;
-    completedAt: string | null;
+    passed: boolean;
+    attemptedAt: string;
 }
 
 async function fetchJson<T>(path: string): Promise<T> {
-    const res = await fetch(`${BASE_URL}${path}`);
+    const token = localStorage.getItem('access_token');
+    const headers: Record<string, string> = {};
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    const res = await fetch(`${BASE_URL}${path}`, { headers });
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     return res.json();
 }
