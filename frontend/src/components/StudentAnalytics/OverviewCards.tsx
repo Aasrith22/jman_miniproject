@@ -1,5 +1,5 @@
 import React from 'react';
-import { OverviewStats } from '../api';
+import { OverviewStats } from '../../api';
 
 interface Props {
     data: OverviewStats;

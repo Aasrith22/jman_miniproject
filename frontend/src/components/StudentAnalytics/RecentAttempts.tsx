@@ -1,5 +1,5 @@
 import React from 'react';
-import { RecentAttempt } from '../api';
+import { RecentAttempt } from '../../api';
 
 interface Props {
     data: RecentAttempt[];

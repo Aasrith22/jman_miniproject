@@ -23,7 +23,7 @@ export class DashboardService {
                 instructor: { select: { full_name: true } },
                 enrolled_students: true,
                 modules: true,
-                assessments: {
+                assessment: {
                     include: {
                         attempts: { select: { score: true } },
                     },
@@ -32,9 +32,9 @@ export class DashboardService {
         });
 
         return courses.map((course) => {
-            const allScores = course.assessments.flatMap((a) =>
-                a.attempts.filter((t) => t.score !== null).map((t) => t.score as number),
-            );
+            const allScores = course.assessment?.attempts
+                .filter((t) => t.score !== null)
+                .map((t) => t.score as number) || [];
             const avgScore =
                 allScores.length > 0
                     ? Math.round((allScores.reduce((s, v) => s + v, 0) / allScores.length) * 100) / 100
@@ -55,7 +55,6 @@ export class DashboardService {
     async getAssessmentPerformance() {
         const assessments = await this.prisma.assessment.findMany({
             include: {
-                module: { select: { module_title: true } },
                 course: { select: { course_name: true } },
                 attempts: { select: { score: true } },
             },
@@ -69,9 +68,8 @@ export class DashboardService {
             return {
                 assessmentId: a.assessment_id,
                 title: a.title,
-                moduleName: a.module.module_title,
-                courseName: a.course?.course_name ?? 'N/A',
-                totalMarks: a.total_marks,
+                courseName: a.course.course_name,
+                passingScore: a.passing_score,
                 totalAttempts: a.attempts.length,
                 avgScore: scores.length > 0
                     ? Math.round((scores.reduce((s, v) => s + v, 0) / scores.length) * 100) / 100
@@ -87,12 +85,12 @@ export class DashboardService {
             where: { user_role: 'STUDENT' },
             include: {
                 enrolled_courses: true,
-                attempts: { select: { score: true } },
+                assessment_attempts: { select: { score: true } },
             },
         });
 
         return students.map((s) => {
-            const scores = s.attempts
+            const scores = s.assessment_attempts
                 .filter((a) => a.score !== null)
                 .map((a) => a.score as number);
 
@@ -101,7 +99,7 @@ export class DashboardService {
                 fullName: s.full_name,
                 email: s.email,
                 coursesEnrolled: s.enrolled_courses.length,
-                assessmentsAttempted: s.attempts.length,
+                assessmentsAttempted: s.assessment_attempts.length,
                 avgScore: scores.length > 0
                     ? Math.round((scores.reduce((sum, v) => sum + v, 0) / scores.length) * 100) / 100
                     : null,
@@ -110,22 +108,22 @@ export class DashboardService {
     }
 
     async getRecentAttempts() {
-        const attempts = await this.prisma.attempt.findMany({
-            orderBy: { started_at: 'desc' },
+        const attempts = await this.prisma.assessmentAttempt.findMany({
+            orderBy: { attempted_at: 'desc' },
             take: 10,
             include: {
-                user: { select: { full_name: true } },
+                student: { select: { full_name: true } },
                 assessment: { select: { title: true } },
             },
         });
 
         return attempts.map((a) => ({
             attemptId: a.attempt_id,
-            studentName: a.user.full_name,
+            studentName: a.student.full_name,
             assessmentTitle: a.assessment.title,
             score: a.score,
-            startedAt: a.started_at,
-            completedAt: a.completed_at,
+            passed: a.passed,
+            attemptedAt: a.attempted_at,
         }));
     }
 }

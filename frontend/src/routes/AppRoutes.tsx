@@ -10,6 +10,7 @@ import CourseBuilder from "../pages/CourseBuilder";
 import AssessmentForm from "../components/forms/Assessmentform"
 import QuestionForm from "../components/forms/QuestionForm";
 import AssessmentBuilder from "../pages/AssessmentBuilder";
+import StudentAnalytics from "../pages/StudentAnalytics";
 
 export default function AppRoutes() {
   return (
@@ -34,6 +35,14 @@ export default function AppRoutes() {
             <StudentDashboard />
           </ProtectedRoute>
         }
+       />
+       <Route
+        path="/student/analytics"
+        element={
+          <ProtectedRoute user_role="STUDENT">
+            <StudentAnalytics />
+          </ProtectedRoute>
+        }
       />
       <Route
           path="/instructor/:instructorId/course/create"
@@ -51,6 +60,7 @@ export default function AppRoutes() {
           path="/assessment/:assessmentId"
           element={<AssessmentBuilder/>}
         />
+      
     </Routes>
   );
 }

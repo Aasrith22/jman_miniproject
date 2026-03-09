@@ -1,5 +1,5 @@
 import React from 'react';
-import { StudentStat } from '../api';
+import { StudentStat } from '../../api';
 
 interface Props {
     data: StudentStat[];
