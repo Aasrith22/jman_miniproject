@@ -6,6 +6,7 @@ import AssessmentHeader from "./AssessmentHeader";
 import { useEffect, useState } from "react";
 import { useAssessment } from "../../../api/hooks/useAssessments";
 import { useSubmitAssessment } from "../../../api/hooks/useAssessments";
+import { useNavigate } from "react-router-dom";
 
 interface AssessmentDetails {
     assessment_id: string,
@@ -53,6 +54,10 @@ export default function AssessmentModule() {
         })
     };
 
+    const navigate = useNavigate();
+    const handleExitNavigation = () => {
+        navigate('/mycourse')
+    }
 
     return (
         <>
@@ -67,7 +72,9 @@ export default function AssessmentModule() {
                         className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white/90 transition-colors mb-4 group"
                     >
                         <span className="group-hover:-translate-x-0.5 transition-transform"><IconBack /></span>
-                        Exit
+                        <button onClick={() => handleExitNavigation()}>
+                            Exit
+                        </button>
                     </button>
 
                     {
@@ -83,9 +90,7 @@ export default function AssessmentModule() {
                     }
 
                     {assessmentDetails &&
-                        <AssessmentCompletionHeader />}
-
-
+                        <AssessmentHeader total_questions={data?.questions.length ?? 0} answered_questions={answers.length} />}
                 </div>
 
                 <div className="space-y-3">

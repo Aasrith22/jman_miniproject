@@ -17,6 +17,10 @@ const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => vo
     sessionStorage.setItem("assessment_title", data.assessment_details.title)
   }
 
+  if (!isLoading) {
+    console.log(data)
+  }
+
   const totalLessons = data?.total_modules;
   const doneLessons = data?.completed_count;
 
@@ -84,7 +88,7 @@ const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => vo
 
           return <ModuleAccordion key={mod.module_id} module={mod} defaultOpen={i === 0} course_id={course.course.course_id} />
         })}
-        <AssessmentAccordion />
+        <AssessmentAccordion best_assessment_attempt={course.best_assessment_attempt} />
       </div>
     </div>
   );

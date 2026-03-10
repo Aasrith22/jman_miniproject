@@ -1,13 +1,13 @@
 import React from "react";
 
-export default function AssessmentHeader() {
+export default function AssessmentHeader({ total_questions, answered_questions }: { total_questions: number, answered_questions: number }) {
     return (
         <>
             <div className="mt-6 grid grid-cols-3 gap-4">
                 {[
-                    { label: "Total Questions", value: `10` },
-                    { label: "Answered", value: `1` },
-                    { label: "Remaining", value: 10 - 1 },
+                    { label: "Total Questions", value: total_questions },
+                    { label: "Answered", value: answered_questions },
+                    { label: "Remaining", value: total_questions - answered_questions },
                 ].map((stat) => (
                     <div key={stat.label} className="bg-white/5 rounded-xl p-3 text-center">
                         <p className="text-lg font-bold text-white" style={{ color: "#FCA5A5" }}>{stat.value}</p>
