@@ -14,7 +14,7 @@ export class UserService {
       throw new ForbiddenException('Invalid role selection');
     }
 
-    return this.prisma.user.create({
+    const newUser =  this.prisma.user.create({
       data: {
         full_name: dto.full_name,
         email: dto.email,
@@ -22,6 +22,7 @@ export class UserService {
         user_role: dto.user_role,
       },
     });
+    return newUser;
   }
 
   async getusers(){
