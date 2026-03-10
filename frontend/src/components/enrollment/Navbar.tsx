@@ -16,7 +16,7 @@ export default function Navbar() {
 
         {/* Centre links */}
         <div style={s.links}>
-          {[{ to: '/student/my-courses', label: 'Courses' }, { to: '/student/enroll', label: 'Enrolled' }, { to: '/student/analytics', label: 'Analytics' }].map(({ to, label }) => (
+          {[{ to: '/student/my-courses', label: 'Courses' }, { to: '/student/enroll', label: 'Mycourses' }, { to: '/student/analytics', label: 'Analytics' }].map(({ to, label }) => (
             <Link key={to} to={to} className={`nav-link${isActive(to) ? ' nav-link-active' : ''}`} style={{ ...s.link, ...(isActive(to) ? s.linkActive : {}) }}>
               {label}
             </Link>

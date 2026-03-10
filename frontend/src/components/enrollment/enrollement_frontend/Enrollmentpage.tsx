@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { loginUser } from '../../../api/auth.api';
 import { useAuth } from "../../../auth/useAuth";
 
 const API = "http://localhost:3000";
@@ -31,10 +30,9 @@ type CourseDetail = {
 function EnrollmentPage() {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { user } = useAuth();
 
   const [course, setCourse] = useState<CourseDetail | null>(null);
-  const [form, setForm] = useState({ full_name: "", email: "", password: "" });
   // note: full_name not used by auth endpoint but retained for UI
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
@@ -61,12 +59,7 @@ function EnrollmentPage() {
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleEnroll = async () => {
     setError("");
 
     if (!courseId) {
@@ -74,26 +67,25 @@ function EnrollmentPage() {
       return;
     }
 
+    
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     setEnrolling(true);
     try {
-      // 1. Authenticate via backend auth endpoint
-      const loginRes = await loginUser({ email: form.email, password: form.password });
-      login(loginRes.data.access_token);
-
-      // 2. Enroll using the user id decoded from JWT (available through context)
-      const uid = user?.sub;
+      const uid = (user as any).sub;
       if (!uid) throw new Error("Unable to determine user id");
+
       await axios.post(`${API}/courses/enroll`, {
         user_id: uid,
-        course_id: courseId || '',
+        course_id: courseId || "",
       });
+
       setSuccess(true);
     } catch (err: any) {
-      if (err.response?.status === 401) {
-        setError("Invalid email or password. Please try again.");
-      } else {
-        setError("Enrollment failed. Please try again.");
-      }
+      setError("Enrollment failed. Please try again.");
       console.error(err);
     } finally {
       setEnrolling(false);
@@ -160,6 +152,8 @@ function EnrollmentPage() {
               </div>
             </div>
 
+            {/* (Enroll button removed from here; moved below course content) */}
+
             {/* Modules & Sections */}
             <h3 style={s.sectionHeading}>Course Content</h3>
 
@@ -199,62 +193,23 @@ function EnrollmentPage() {
                 </div>
               ))
             )}
-          </div>
 
-          {/* ====== RIGHT: Enrollment Form ====== */}
-          <div style={s.enrollPanel}>
-            <div style={s.enrollCard}>
-              <h3 style={s.formTitle}>Enroll in this Course</h3>
-
+            {/* Register button placed below course content */}
+            <div style={{ marginTop: 18, textAlign: "center" }}>
               {error && <p style={s.errorText}>{error}</p>}
-
-              <form onSubmit={handleSubmit}>
-                <label style={s.label}>Full Name</label>
-                <input
-                  style={s.input}
-                  name="full_name"
-                  placeholder="Enter your full name"
-                  value={form.full_name}
-                  onChange={handleChange}
-                  required
-                />
-
-                <label style={s.label}>Email</label>
-                <input
-                  style={s.input}
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                />
-
-                <label style={s.label}>Password</label>
-                <input
-                  style={s.input}
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={form.password}
-                  onChange={handleChange}
-                  required
-                />
-
-                <button
-                  type="submit"
-                  style={{ ...s.primaryBtn, width: "100%", opacity: enrolling ? 0.7 : 1 }}
-                  disabled={enrolling}
-                >
-                  {enrolling ? "Enrolling..." : "Register"}
-                </button>
-              </form>
-
-              <button style={s.cancelBtn} onClick={() => navigate(-1)}>
-                Cancel
+              <button
+                style={{ ...s.primaryBtn, padding: "12px 22px", width: 200 }}
+                onClick={handleEnroll}
+                disabled={enrolling}
+                onMouseEnter={() => { /* optional hover handled by CSS inlined here if needed */ }}
+              >
+                {enrolling ? "Enrolling..." : "Register"}
               </button>
             </div>
           </div>
+
+          {/* ====== RIGHT: (removed interactive registration form) ====== */}
+          {/* Instead, show an Enroll button under the course header/stats */}
         </div>
       )}
     </div>

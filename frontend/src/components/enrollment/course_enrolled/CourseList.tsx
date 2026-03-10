@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../auth/useAuth';
@@ -21,6 +21,10 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
   const [fetchError, setFetchError] = useState('');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  // live search: updates as the user types
+  const [search, setSearch] = useState('');
+  // track which card is hovered to apply inline hover styles
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -82,6 +86,16 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
 
   const displayCourses = enrolledOnly ? courses.filter(c => c.enrolled) : courses;
 
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return displayCourses;
+    return displayCourses.filter(c =>
+      c.course_name.toLowerCase().includes(q) ||
+      c.technology.toLowerCase().includes(q) ||
+      c.instructor.full_name.toLowerCase().includes(q)
+    );
+  }, [displayCourses, search]);
+
   if (loading) return <div style={s.centered}>Loading courses...</div>;
   if (fetchError) return <div style={{ ...s.centered, color: '#ef4444' }}>{fetchError}</div>;
 
@@ -97,9 +111,20 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
           <span style={s.toastClose}>×</span>
         </div>
       )}
-      <h1 style={s.pageTitle}>{enrolledOnly ? 'My Enrolled Courses' : 'Browse Courses'}</h1>
+      <div style={s.headerRow}>
+        <h1 style={s.pageTitle}>{enrolledOnly ? 'My Enrolled Courses' : 'Browse Courses'}</h1>
+        <div style={s.searchBar}>
+          <input
+            aria-label="Search courses"
+            placeholder="Search"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={s.searchInput}
+          />
+        </div>
+      </div>
 
-      {enrolledOnly && displayCourses.length === 0 && !loading && (
+  {enrolledOnly && filtered.length === 0 && !loading && (
         <div style={s.centered}>
           <p>You haven't enrolled in any courses yet.</p>
           <button style={s.enrollBtn} onClick={() => navigate('/student/my-courses')}>Browse Courses</button>
@@ -107,8 +132,19 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
       )}
 
       <div style={s.grid}>
-        {displayCourses.map(course => (
-          <div key={course.course_id} style={s.card} className="course-card" onClick={() => setOpenMenuId(null)}>
+        {filtered.map(course => (
+          <div
+            key={course.course_id}
+            style={{
+              ...s.card,
+              transform: hoveredCard === course.course_id ? 'translateY(-6px)' : undefined,
+              boxShadow: hoveredCard === course.course_id ? '0 12px 40px rgba(79,70,229,0.18)' : (s.card as any).boxShadow,
+            }}
+            className="course-card"
+            onClick={() => setOpenMenuId(null)}
+            onMouseEnter={() => setHoveredCard(course.course_id)}
+            onMouseLeave={() => setHoveredCard(null)}
+          >
             <div style={s.cardTop}>
               <span style={s.techBadge}>{course.technology}</span>
               {course.enrolled && <span style={s.enrolledBadge}>✓ Enrolled</span>}
@@ -137,7 +173,15 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
               </div>
             ) : (
               <div style={s.actionRow}>
-                <button style={s.enrollBtn} className="enroll-btn" onClick={() => handleEnrollClick(course)}>
+                <button
+                  style={{
+                    ...s.enrollBtn,
+                    transform: hoveredCard === course.course_id ? 'translateY(-3px)' : undefined,
+                    boxShadow: hoveredCard === course.course_id ? '0 8px 24px rgba(79,70,229,0.28)' : (s.enrollBtn as any).boxShadow,
+                  }}
+                  className="enroll-btn"
+                  onClick={() => handleEnrollClick(course)}
+                >
                   Enroll Now
                 </button>
 
@@ -157,6 +201,12 @@ const s: Record<string, React.CSSProperties> = {
   pageTitle: {
     fontSize: 28, fontWeight: 800, marginBottom: 32, color: '#1e1b4b',
     borderLeft: '4px solid #7c3aed', paddingLeft: 14,
+  },
+  headerRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 12 },
+  searchBar: { display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' },
+  searchInput: {
+    padding: '10px 12px', fontSize: 14, borderRadius: 10, border: '1px solid #e6e7f8', outline: 'none', minWidth: 280,
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.6)'
   },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 24 },
   card: {
