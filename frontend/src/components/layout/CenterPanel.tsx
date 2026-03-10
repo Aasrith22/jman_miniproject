@@ -1,6 +1,6 @@
 import "../../styles/centerpanel.css";
 
-import { CourseModule } from "../../types/lms";
+import { CourseModule, Section } from "../../types/lms";
 import ModuleForm from "../forms/ModuleForm";
 import SectionForm from "../forms/SectionForm";
 
@@ -9,6 +9,12 @@ interface Props {
   courseId: string;
   selectedModule: CourseModule | null;
   onSuccess: () => void;
+  editingModule : CourseModule | null;
+  updateModule : (m : CourseModule) => void;
+  clearEditingModule : () => void;
+  editingSection : Section | null;
+  updateSection : (s : Section) => void;
+  clearEditingSection : () => void;
 }
 
 const CenterPanel = ({
@@ -16,18 +22,24 @@ const CenterPanel = ({
   courseId,
   selectedModule,
   onSuccess,
+  editingModule,
+  updateModule,
+  clearEditingModule,
+  editingSection,
+  updateSection,
+  clearEditingSection
 }: Props) => {
   return (
     <main className="center-panel">
       {!activeForm && (
         <div className="placeholder">
-          <h2>Select an action</h2>
-          <p>Add a module or select a module to add sections</p>
+          <h2 style={{ textAlign: "center", marginBottom: "8px", color: "#374151" }}>Select an action</h2>
+          <p style={{ textAlign: "center", color: "#6b7280", fontSize: "15px" }}>Add a module or select a module to add sections</p>
         </div>
       )}
 
       {activeForm === "addModule" && (
-        <ModuleForm courseId={courseId} onSuccess={onSuccess} />
+        <ModuleForm courseId={courseId} onSuccess={onSuccess} editingModule={editingModule} onUpdate={updateModule} clearEditing={clearEditingModule}/>
       )}
 
       {activeForm === "addSection" && !selectedModule && (
@@ -40,6 +52,9 @@ const CenterPanel = ({
         <SectionForm
           moduleId={selectedModule.module_id}
           onSuccess={onSuccess}
+          editingSection={editingSection}
+          onUpdate={updateSection}
+          clearEditing={clearEditingSection}
         />
       )}
     </main>

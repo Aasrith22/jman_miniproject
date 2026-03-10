@@ -16,6 +16,7 @@ export interface Section{
     section_title:string;
     section_content?:string;
     sections_images?:string;
+    image_description?:string;
     content_url?:string;
     url_description?:string;
     module_id:string;

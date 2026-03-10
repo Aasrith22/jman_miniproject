@@ -9,36 +9,42 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+  const formData = new FormData(e.currentTarget);
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
+  try {
     const res = await loginUser({ email, password });
+    
+    // Access token via res.data as requested
     const token = res.data.access_token;
-
     login(token);
 
+    // Decode to get the user_id (stored in 'sub' field)
     const payload = decodeJWT(token);
+    if (payload?.sub) {
+      localStorage.setItem("userId", payload.sub.toString());
+    }
 
+    // Redirect based on role
     payload.role === "INSTRUCTOR"
-      ? navigate("/instructor")
+      ? navigate("/instructor/manage-courses")
       : navigate("/student");
-  };
+
+  } catch (error: any) {
+    const errorMsg = error.response?.data?.message || "Login failed";
+    alert(errorMsg);
+  }
+};
 
   return (
     <div style={containerStyle}>
       <form onSubmit={handleSubmit} style={formStyle}>
         <h2>Login</h2>
 
-        <input
-          name="email"
-          placeholder="Email"
-          required
-          style={inputStyle}
-        />
+        <input name="email" placeholder="Email" required style={inputStyle} />
 
         <input
           name="password"

@@ -2,6 +2,7 @@ import "../../styles/questionform.css";
 import { useState, useEffect } from "react";
 import { CreateQuestionDTO, CreateQuestionChoiceDTO, Questions } from "../../types/lms";
 import { updateQuestion } from "../../api/questionsapi";
+import InstructorNavbar from "../InstructorManageCourses/InstructorNavbar";
 interface Props {
   onAdd: (q: CreateQuestionDTO) => void;
   assessmentId: string;
@@ -67,28 +68,26 @@ const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdat
 
   }, [editingQuestion]);
   return (
+    <>
     <main className="question-form">
 
       <h2>Add Question</h2>
-
+      <label>Enter the Question here...</label>
       <input
         placeholder="Question Text"
         value={questionText}
         onChange={(e) => setQuestionText(e.target.value)}
       />
-
-      {options.map((opt, i) => (
-        <input
+      <label>Provide all 4 oprions for the question below ...</label>
+      <div className="options-grid">
+        {options.map((opt, i) => (
+          <input
           key={i}
           placeholder={`Option ${i + 1}`}
           value={opt}
-          onChange={(e) => {
-            const newOptions = [...options];
-            newOptions[i] = e.target.value;
-            setOptions(newOptions);
-          }}
-        />
-      ))}
+          onChange={(e) => {const newOptions = [...options]; newOptions[i] = e.target.value; setOptions(newOptions);}}/>))
+        }
+      </div>
       <h2>Select Correct Option</h2>
       <select
         value={correctIndex}
@@ -103,6 +102,7 @@ const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdat
       <button onClick={handleSubmit}>{editingQuestion ? "Save Changes" : "Add Question"}</button>
 
     </main>
+    </>
   );
 };
 

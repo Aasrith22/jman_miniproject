@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async adduser(dto: CreateUserDto) {
     const ALLOWED_ROLES = [Role.STUDENT, Role.INSTRUCTOR];
@@ -32,7 +32,7 @@ export class UserService {
     }
   }
 
-  async getusers(){
+  async getusers() {
     return this.prisma.user.findMany();
   }
 }

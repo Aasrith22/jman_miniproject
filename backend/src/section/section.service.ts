@@ -34,4 +34,32 @@ export class SectionService {
             orderBy : { created_at : 'asc'}
         })
     }
+
+    deletesection(id : string){
+        return this.prismaservice.section.delete(
+            {
+                where:{
+                    section_id:id,
+                }
+            }
+        )
+    }
+
+    updatesection(id:string,data:CreateSectionDto){
+        return this.prismaservice.section.update(
+            {
+                where:{
+                    section_id:id,
+                },
+                data:{
+                    section_title:data.section_title,
+                    section_content:data.section_content,
+                    section_images:data.section_images,
+                    image_description:data.image_description,
+                    content_url:data.content_url,
+                    url_description:data.url_description,
+                }
+            }
+        )
+    }
 }

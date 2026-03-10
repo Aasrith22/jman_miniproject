@@ -1,8 +1,9 @@
-import '../../styles/form.css';
+import '../../styles/assessmentform.css';
 import { useState } from "react";
 import { CreateAssessmentDTO } from "../../types/lms";
 import { createAssessment } from "../../api/assessmentapi";
 import { useNavigate, useParams } from "react-router-dom";
+import InstructorNavbar from '../InstructorManageCourses/InstructorNavbar';
 
 
 const CourseForm = () => {
@@ -30,14 +31,52 @@ const CourseForm = () => {
         navigate(`/assessment/${res.assessment_id}`)
     }
     return(
-        <form onSubmit={handleSubmit}>
-            <h2>Create Assessment</h2>
-            <input placeholder="Assessment Title" value={title} onChange={(e) => setTitle(e.target.value)}/>
-            <input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
-            <input placeholder='Passing Score (*/100)' value={passingscore} onChange={(e) => setPassingScore(Number(e.target.value))}/>
-            <button type="submit">Create</button>
-        </form>
-    )
+      <>
+      <InstructorNavbar/>
+  <div className="assessment-form-wrapper">
+
+  <form className="assessment-form" onSubmit={handleSubmit}>
+
+    <h2>Create Assessment</h2>
+
+    <div className="form-group">
+      <label>Enter the assessment title</label>
+      <input
+        placeholder="Assessment Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+    </div>
+
+    <div className="form-group">
+      <label>Provide a brief description about the assessment</label>
+      <input
+        placeholder="Description"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+    </div>
+
+    <div className="form-group">
+      <div className="label-row">
+        <label>Provide total marks for the assessment</label>
+        <span className="note">Each MCQ carries 1 mark</span>
+      </div>
+
+      <input
+        placeholder="Passing Score"
+        value={passingscore}
+        onChange={(e) => setPassingScore(Number(e.target.value))}
+      />
+    </div>
+
+    <button type="submit">Create</button>
+
+  </form>
+
+</div>
+</>
+)
 }
 
 export default CourseForm;

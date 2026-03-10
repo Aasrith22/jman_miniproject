@@ -1,66 +1,23 @@
-// import '../../styles/form.css';
-// import { useState } from "react";
-// import { CreateSectionDto } from "../../types/lms";
-// import { createSection } from "../../api/sectionapi";
-
-// interface Props {
-//   moduleId: string;
-//   onSuccess: () => void;
-// }
-
-// const SectionForm = ({ moduleId, onSuccess }: Props) => {
-//   const [section_title, setTitle] = useState("");
-//   const [section_content, setContent] = useState("");
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     const data: CreateSectionDto = {
-//       section_title,
-//       module_id:moduleId,
-//     };
-
-//     await createSection(data);
-//     onSuccess();
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <h2>Add Section</h2>
-//       <input
-//         placeholder="Section Title"
-//         value={section_title}
-//         onChange={(e) => setTitle(e.target.value)}
-//       />
-//       <textarea
-//         placeholder="Section Content"
-//         value={section_content}
-//         onChange={(e) => setContent(e.target.value)}
-//       />
-//       <button>Add</button>
-//     </form>
-//   );
-// };
-
-// export default SectionForm;
-
-import "../../styles/form.css";
-import { useState } from "react";
-import { CreateSectionDto } from "../../types/lms";
-import { createSection } from "../../api/sectionapi";
+import "../../styles/sectionform.css";
+import { useState, useEffect } from "react";
+import { CreateSectionDto, Section } from "../../types/lms";
+import { createSection, updateSection } from "../../api/sectionapi";
 
 interface Props {
   moduleId: string;
   onSuccess: () => void;
+  editingSection?: Section | null;
+  onUpdate: (s: Section) => void;
+  clearEditing: () => void;
 }
 
-const SectionForm = ({ moduleId, onSuccess }: Props) => {
+const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditing }: Props) => {
 
   const [section_title, setTitle] = useState("");
   const [section_content, setContent] = useState("");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<string | null>("");
 
   const [image_description, setImageDescription] = useState("");
   const [url_description, setUrlDescription] = useState("");
@@ -94,9 +51,9 @@ const SectionForm = ({ moduleId, onSuccess }: Props) => {
       imageUrl = await uploadToCloudinary(imageFile, "image");
     }
 
-    if (videoFile) {
-      videoUrl = await uploadToCloudinary(videoFile, "video");
-    }
+    // if (videoFile) {
+    //   videoUrl = await uploadToCloudinary(videoFile, "video");
+    // }
 
     const data: CreateSectionDto = {
       section_title,
@@ -104,62 +61,76 @@ const SectionForm = ({ moduleId, onSuccess }: Props) => {
       module_id: moduleId,
       section_images: imageUrl || undefined,
       image_description: image_description || undefined,
-      content_url: videoUrl || undefined,
+      content_url: videoFile || undefined,
       url_description: url_description || undefined,
     };
 
-    await createSection(data);
-    onSuccess();
+    if (editingSection) {
+      const updated = await updateSection(editingSection.section_id, data);
+      onUpdate(updated);
+      clearEditing?.();
+    } else {
+      await createSection(data);
+      onSuccess();
+    }
   };
-
+  useEffect(() => {
+    if (!editingSection) return;
+    setTitle(editingSection.section_title);
+    setContent(editingSection.section_content || "");
+    setImageDescription(editingSection.image_description || "");
+    setUrlDescription(editingSection.url_description || "");
+  }, [editingSection]);
   return (
-    <form onSubmit={handleSubmit}>
+    <div className="form-wrapper">
+      <form className="section-form" onSubmit={handleSubmit}>
 
-      <h2>Add Section</h2>
+        <h2>Add Section</h2>
 
-      <input
-        placeholder="Section Title"
-        value={section_title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+        <input
+          placeholder="Section Title"
+          value={section_title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-      <textarea
-        placeholder="Section Content"
-        value={section_content}
-        onChange={(e) => setContent(e.target.value)}
-      />
+        <textarea
+          placeholder="Section Content"
+          value={section_content}
+          onChange={(e) => setContent(e.target.value)}
+        />
 
-      <h3>Upload Image</h3>
+        <h3>Upload Image</h3>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-      />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+        />
 
-      <input
-        placeholder="Image Description"
-        value={image_description}
-        onChange={(e) => setImageDescription(e.target.value)}
-      />
+        <input
+          placeholder="Image Description"
+          value={image_description}
+          onChange={(e) => setImageDescription(e.target.value)}
+        />
 
-      <h3>Upload Video</h3>
+        <h3>Upload Video</h3>
 
-      <input
-        type="file"
-        accept="video/*"
-        onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-      />
+        <input
+          type="text"
+          // accept="video/*"
+          onChange={(e) => setVideoFile(e.target.value || null)}
+        />
 
-      <input
-        placeholder="Video Description"
-        value={url_description}
-        onChange={(e) => setUrlDescription(e.target.value)}
-      />
+        <input
+          placeholder="Video Description"
+          value={url_description}
+          onChange={(e) => setUrlDescription(e.target.value)}
+        />
 
-      <button type="submit">Add</button>
+        <button>{editingSection ? "Save Changes" : "Add"}</button>
 
-    </form>
+      </form>
+    </div>
   );
 };
 

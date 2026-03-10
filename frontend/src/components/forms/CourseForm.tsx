@@ -1,8 +1,10 @@
-import '../../styles/form.css';
+import '../../styles/courseform.css';
 import { useState } from "react";
 import { Course, CreateCourseDTO } from "../../types/lms";
 import { createCourse } from "../../api/courseapi";
 import { useNavigate, useParams } from "react-router-dom";
+import Navbar from '../enrollment/Navbar';
+import InstructorNavbar from '../InstructorManageCourses/InstructorNavbar';
 
 
 const CourseForm = () => {
@@ -28,13 +30,21 @@ const CourseForm = () => {
         navigate(`/coursemodule/${res.course_id}`)
     }
     return(
-        <form onSubmit={handleSubmit}>
-            <h2>CreateCourse</h2>
-            <input placeholder="Course Name" value={course_name} onChange={(e) => setCourseName(e.target.value)}/>
-            <input placeholder="Technology" value={technology} onChange={(e) => setTechnology(e.target.value)}/>
-            <button type="submit">Create</button>
-        </form>
+        <>
+        <InstructorNavbar/>
+        <div className="course-form-wrapper">
+            <form className="course-form" onSubmit={handleSubmit}>
+                <h2>Create Course</h2>
+                <label>Enter the Course Name here...</label>
+                <input placeholder="Course Name" value={course_name} onChange={(e) => setCourseName(e.target.value)}/>
+                <label>Specify the Technology Tag...</label>
+                <input placeholder="Technology" value={technology} onChange={(e) => setTechnology(e.target.value)}/>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+        </>
     )
 }
 
 export default CourseForm;
+

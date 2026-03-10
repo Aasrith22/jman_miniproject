@@ -6,6 +6,7 @@ import QuestionSidebar from "../components/layout/QuestionSidebar";
 import QuestionForm from "../components/forms/QuestionForm";
 import { useParams } from "react-router-dom";
 import { createQuestion, fetchQuestions, deleteQuestion } from "../api/questionsapi";
+import InstructorNavbar from '../components/InstructorManageCourses/InstructorNavbar';
 
 const AssessmentBuilder = () => {
 
@@ -52,6 +53,7 @@ const AssessmentBuilder = () => {
   };
   const clearEditing = () => {
     setEditingQuestion(null);
+    setShowForm(false);
   };
 
   const handleUpdateQuestion = (updated: Questions) => {
@@ -62,6 +64,8 @@ const AssessmentBuilder = () => {
   );
 };
   return (
+    <>
+    <InstructorNavbar/>
   <div className="assessment-layout">
 
     <QuestionSidebar
@@ -90,6 +94,7 @@ const AssessmentBuilder = () => {
     </div>
 
   </div>
+  </>
 );
 };
 

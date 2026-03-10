@@ -35,6 +35,7 @@ export class AuthService {
     console.log(user.user_id);
     return {
       access_token: this.jwtService.sign(payload),
+      user_id: user.user_id, // Add this line
     };
   }
 }

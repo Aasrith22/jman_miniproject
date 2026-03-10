@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { decodeJWT, JwtPayload } from "../utils/jwt";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Props {
   children: React.ReactNode;
@@ -13,6 +14,8 @@ export const AuthProvider = ({ children }: Props) => {
   const [token, setToken] = useState<string | null>(storedToken);
   const [user, setUser] = useState<JwtPayload | null>(storedUser);
 
+  const nav = useNavigate()
+;
   const login = (newToken: string) => {
     localStorage.setItem("access_token", newToken);
     setToken(newToken);
@@ -21,8 +24,10 @@ export const AuthProvider = ({ children }: Props) => {
 
   const logout = () => {
     localStorage.removeItem("access_token");
-    setToken(null);
-    setUser(null);
+    // setToken(null);
+    // setUser(null);
+    localStorage.clear();
+    nav('/');
   };
 
   return (

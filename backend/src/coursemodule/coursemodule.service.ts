@@ -31,4 +31,28 @@ export class CoursemoduleService {
             }
         )
     }
+
+    updatemodule(id : string , data: CreateModuleDto){
+        return this.prismaservice.courseModule.update(
+            {
+                where:{
+                    module_id : id,
+                },
+                data:{
+                    module_title:data.module_title,
+                    module_description:data.module_description
+                }
+            }
+        )
+    }
+
+    deletemodule(id : string){
+        return this.prismaservice.courseModule.delete(
+            {
+                where:{
+                    module_id:id,
+                }
+            }
+        )
+    }
 }

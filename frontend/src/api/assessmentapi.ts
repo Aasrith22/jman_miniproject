@@ -12,5 +12,6 @@ export async function fetchAssessment(course_id : string) : Promise<Assessment>{
 }
 
 export async function deleteAssessment(assessment_id:string){
-    await api.delete(`/course/deleteassessment/${assessment_id}`)
+    const res = await api.delete(`/course/deleteassessment/${assessment_id}`)
+    return res.data;
 }
