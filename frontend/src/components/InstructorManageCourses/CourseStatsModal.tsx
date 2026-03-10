@@ -39,7 +39,7 @@ export default function CourseStatsModal({ stats, onClose }: any) {
 
             <PolarGrid />
 
-            <PolarAngleAxis dataKey="subject" />
+            {/* <PolarAngleAxis dataKey={"subject"}/> */}
 
             <PolarRadiusAxis />
 

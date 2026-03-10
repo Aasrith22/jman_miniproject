@@ -20,15 +20,6 @@ export default function AppRoutes() {
       <Route path="/user" element={<UsersPage/>}/>
 
       <Route
-        path="/instructor"
-        element={
-          <ProtectedRoute user_role="INSTRUCTOR">
-            <InstructorDashboard />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
         path="/instructor/manage-courses"
         element={
           <ProtectedRoute user_role="INSTRUCTOR">

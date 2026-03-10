@@ -9,7 +9,7 @@ export default function InstructorDashboard() {
   const [courses, setCourses] = useState<any[]>([]);
   const [search, setSearch] = useState("");
 
-  const instructorId = localStorage.getItem("user_id");
+  const instructorId = localStorage.getItem("userId");
 
   useEffect(() => {
     fetchCourses();

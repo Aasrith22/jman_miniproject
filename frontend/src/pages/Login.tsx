@@ -25,7 +25,7 @@ export default function Login() {
       const payload = decodeJWT(token);
 
       payload.role === "INSTRUCTOR"
-        ? navigate("/instructor")
+        ? navigate("/instructor/manage-courses")
         : navigate("/student");
     } catch (error: any) {
       if (error.response) {
