@@ -1,14 +1,14 @@
 import "../../styles/sectionform.css";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { CreateSectionDto, Section } from "../../types/lms";
 import { createSection, updateSection } from "../../api/sectionapi";
 
 interface Props {
   moduleId: string;
   onSuccess: () => void;
-  editingSection ?: Section | null;
-  onUpdate : (s :Section) => void;
-  clearEditing : () => void;
+  editingSection?: Section | null;
+  onUpdate: (s: Section) => void;
+  clearEditing: () => void;
 }
 
 const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditing }: Props) => {
@@ -17,7 +17,7 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
   const [section_content, setContent] = useState("");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<string | null>("");
 
   const [image_description, setImageDescription] = useState("");
   const [url_description, setUrlDescription] = useState("");
@@ -51,9 +51,9 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
       imageUrl = await uploadToCloudinary(imageFile, "image");
     }
 
-    if (videoFile) {
-      videoUrl = await uploadToCloudinary(videoFile, "video");
-    }
+    // if (videoFile) {
+    //   videoUrl = await uploadToCloudinary(videoFile, "video");
+    // }
 
     const data: CreateSectionDto = {
       section_title,
@@ -61,12 +61,12 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
       module_id: moduleId,
       section_images: imageUrl || undefined,
       image_description: image_description || undefined,
-      content_url: videoUrl || undefined,
+      content_url: videoFile || undefined,
       url_description: url_description || undefined,
     };
 
     if (editingSection) {
-      const updated = await updateSection(editingSection.section_id,data);
+      const updated = await updateSection(editingSection.section_id, data);
       onUpdate(updated);
       clearEditing?.();
     } else {
@@ -83,53 +83,53 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
   }, [editingSection]);
   return (
     <div className="form-wrapper">
-    <form className="section-form" onSubmit={handleSubmit}>
+      <form className="section-form" onSubmit={handleSubmit}>
 
-      <h2>Add Section</h2>
+        <h2>Add Section</h2>
 
-      <input
-        placeholder="Section Title"
-        value={section_title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+        <input
+          placeholder="Section Title"
+          value={section_title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-      <textarea
-        placeholder="Section Content"
-        value={section_content}
-        onChange={(e) => setContent(e.target.value)}
-      />
+        <textarea
+          placeholder="Section Content"
+          value={section_content}
+          onChange={(e) => setContent(e.target.value)}
+        />
 
-      <h3>Upload Image</h3>
+        <h3>Upload Image</h3>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-      />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+        />
 
-      <input
-        placeholder="Image Description"
-        value={image_description}
-        onChange={(e) => setImageDescription(e.target.value)}
-      />
+        <input
+          placeholder="Image Description"
+          value={image_description}
+          onChange={(e) => setImageDescription(e.target.value)}
+        />
 
-      <h3>Upload Video</h3>
+        <h3>Upload Video</h3>
 
-      <input
-        type="file"
-        accept="video/*"
-        onChange={(e) => setVideoFile(e.target.files?.[0] || null)}
-      />
+        <input
+          type="text"
+          // accept="video/*"
+          onChange={(e) => setVideoFile(e.target.value || null)}
+        />
 
-      <input
-        placeholder="Video Description"
-        value={url_description}
-        onChange={(e) => setUrlDescription(e.target.value)}
-      />
+        <input
+          placeholder="Video Description"
+          value={url_description}
+          onChange={(e) => setUrlDescription(e.target.value)}
+        />
 
-      <button>{editingSection ? "Save Changes" : "Add"}</button>
+        <button>{editingSection ? "Save Changes" : "Add"}</button>
 
-    </form>
+      </form>
     </div>
   );
 };
