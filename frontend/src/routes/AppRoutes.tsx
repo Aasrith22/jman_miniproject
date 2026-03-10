@@ -10,6 +10,7 @@ import CourseBuilder from "../pages/CourseBuilder";
 import AssessmentForm from "../components/forms/Assessmentform"
 import QuestionForm from "../components/forms/QuestionForm";
 import AssessmentBuilder from "../pages/AssessmentBuilder";
+import InstructorManageDashboard from "../components/InstructorManageCourses/InstructorDashboard";
 
 export default function AppRoutes() {
   return (
@@ -28,13 +29,23 @@ export default function AppRoutes() {
       />
 
       <Route
-        path="/student"
+        path="/instructor/manage-courses"
+        element={
+          <ProtectedRoute user_role="INSTRUCTOR">
+            <InstructorManageDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/student/*"
         element={
           <ProtectedRoute user_role="STUDENT">
             <StudentDashboard />
           </ProtectedRoute>
         }
-      />
+       />
+      {/* analytics is now handled inside StudentDashboard's nested routes */}
       <Route
           path="/instructor/:instructorId/course/create"
           element={<CourseForm />}
@@ -51,6 +62,7 @@ export default function AppRoutes() {
           path="/assessment/:assessmentId"
           element={<AssessmentBuilder/>}
         />
+      
     </Routes>
   );
 }
