@@ -1,12 +1,13 @@
 import React from "react";
 
-export default function AssessmentCompletionHeader() {
+export default function AssessmentCompletionHeader({ passed, score, passing_score }: { passed: boolean, score: number, passing_score: number }) {
     return (
         <>
-            <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="mt-6 grid grid-cols-3 gap-4">
                 {[
-                    { label: "Status", value: `Completed` },
-                    { label: "Marks", value: "100 / 100" },
+                    { label: "Status", value: passed ? "Passed" : "Failed" },
+                    { label: "Marks", value: `${score}/ 100` },
+                    { label: "Passing Score", value: passing_score },
                 ].map((stat) => (
                     <div key={stat.label} className="bg-white/5 rounded-xl p-3 text-center">
                         <p className="text-lg font-bold text-green-500">{stat.value}</p>

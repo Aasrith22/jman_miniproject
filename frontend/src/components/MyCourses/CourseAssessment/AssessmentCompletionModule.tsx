@@ -2,24 +2,21 @@ import React from "react";
 import { IconBack } from "../../../assets/icons/course_icons";
 import AssessmentCard from "./QuestionCard";
 import AssessmentCompletionHeader from "./AssessmentCompletionHeader";
-import AssessmentHeader from "./AssessmentHeader";
 import { useEffect, useState } from "react";
 import { useAssessment } from "../../../api/hooks/useAssessments";
 import { useSubmitAssessment } from "../../../api/hooks/useAssessments";
 import { useNavigate } from "react-router-dom";
-
-interface AssessmentDetails {
-    assessment_id: string,
-    description: string,
-    title: string,
-}
-
-export default function AssessmentModule() {
+import { useAttemptDetails } from "../../../api/hooks/useAssessments";
+import QuestionCompletionCard from "./QuestionCompletionCard";
 
 
-    const [assessmentDetails, setAssessmentDetails] = useState<AssessmentDetails | null>();
+
+export default function AssessmentCompletionModule() {
+
+
+    const [assessmentDetails, setAssessmentDetails] = useState<any | null>();
+
     const [answers, setAnswers] = useState<{ question_id: string; choice_id: string }[]>([]);
-
 
 
     const handleAnswerChange = (question_id: string, choice_id: string) => {
@@ -30,29 +27,19 @@ export default function AssessmentModule() {
     };
 
 
-
-
-
     useEffect(() => {
-        const assessment_id = sessionStorage.getItem("assessment_id")
-        const description = sessionStorage.getItem("assessment_description")
-        const title = sessionStorage.getItem("assessment_title")
-        assessment_id && description && title && setAssessmentDetails(() => ({
-            assessment_id: assessment_id,
-            description: description,
-            title: title
+        const attempt_id = sessionStorage.getItem("attempt_id")
+        attempt_id && setAssessmentDetails(() => ({
+            attempt_id: attempt_id
         }))
     }, [])
 
-    const { data, isLoading } = useAssessment(assessmentDetails?.assessment_id ?? "")
-    const { mutate, isPending, data: result } = useSubmitAssessment(assessmentDetails?.assessment_id ?? "")
+    const { data: attempt, isLoading } = useAttemptDetails(assessmentDetails?.attempt_id ?? "")
 
-    const handleSubmit = () => {
-        console.log("Final Assessment Data:", answers);
-        mutate({
-            answers: answers
-        })
-    };
+    if (!isLoading) {
+        console.log(attempt)
+    }
+
 
     const navigate = useNavigate();
     const handleExitNavigation = () => {
@@ -83,14 +70,13 @@ export default function AssessmentModule() {
 
                             <div className="flex-1 min-w-0">
 
-                                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-1"> {assessmentDetails?.title}</h2>
-                                <p className="text-sm text-white/50">{assessmentDetails.description}</p>
+                                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-1"> {attempt && attempt.assessment.title}</h2>
                             </div>
                         </div>
                     }
 
-                    {assessmentDetails &&
-                        <AssessmentHeader total_questions={data?.questions.length ?? 0} answered_questions={answers.length} />}
+                    {assessmentDetails && attempt &&
+                        <AssessmentCompletionHeader passed={attempt.passed} score={attempt.score} passing_score={attempt.assessment.passing_score} />}
                 </div>
 
                 <div className="space-y-3">
@@ -98,22 +84,14 @@ export default function AssessmentModule() {
                         Question #1
                     </h3>
                     {
-                        assessmentDetails ?
+                        attempt ?
                             <div className="">
                                 {
-                                    data && data.questions.map((question: any, index) => (
-                                        < AssessmentCard key={index} question={question} index={index} onAnswerChange={handleAnswerChange} view={false} />
+                                    attempt.answers && attempt.answers.map((question: any, index: any) => (
+                                        < QuestionCompletionCard key={index} question={question} index={index} />
                                     ))
 
                                 }
-                                <div className="flex justify-end mt-5">
-
-                                    <button className="px-3 py-2 rounded-md bg-green-600 hover:bg-green-500"
-                                        onClick={handleSubmit}
-                                    >
-                                        Submit
-                                    </button>
-                                </div>
                             </div> :
                             <h1>No Assessment found !</h1>
                     }

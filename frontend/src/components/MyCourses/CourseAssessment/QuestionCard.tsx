@@ -1,7 +1,8 @@
 import React from "react";
 
-export default function AssessmentCard({ question, index, onAnswerChange }: { question: any, index: number, onAnswerChange: (qId: string, cId: string) => void }) {
+export default function AssessmentCard({ question, index, onAnswerChange, view }: { question: any, index: number, onAnswerChange: (qId: string, cId: string) => void, view: boolean }) {
 
+    console.log(question)
     return (
         <>
             <div className="rounded-2xl border border-white/10 overflow-hidden bg-white/[0.03] backdrop-blur-sm mb-2">

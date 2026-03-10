@@ -10,8 +10,12 @@ const AssessmentAccordion = ({ best_assessment_attempt }: { best_assessment_atte
     const navigate = useNavigate()
 
 
-    const handleNavigation = () => {
+    const handleAssessmentNavigation = () => {
         navigate('/mycourse/assessment');
+    };
+    const handleAssessmentCompletionNavigation = () => {
+        sessionStorage.setItem("attempt_id", best_assessment_attempt.attempt_id)
+        navigate('/mycourse/assessment/completion');
     };
 
 
@@ -32,7 +36,9 @@ const AssessmentAccordion = ({ best_assessment_attempt }: { best_assessment_atte
                 <span className='text-sm'>
                     {
                         allDone ?
-                            <button className='rounded-md px-3 py-2 bg-green-600 hover:bg-green-500'>
+                            <button className='rounded-md px-3 py-2 bg-green-600 hover:bg-green-500'
+                                onClick={() => handleAssessmentCompletionNavigation()}
+                            >
                                 view answers
                             </button> :
                             <div className='text-white/50 text-sm'>
@@ -41,7 +47,7 @@ const AssessmentAccordion = ({ best_assessment_attempt }: { best_assessment_atte
                     }
                 </span>
                 <button className='rounded-md px-3 py-2 bg-green-600 hover:bg-green-500 text-sm'
-                    onClick={() => handleNavigation()}
+                    onClick={() => handleAssessmentNavigation()}
                 >
                     {
                         allDone ? "re attempt" : "assessment"
