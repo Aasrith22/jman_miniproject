@@ -3,6 +3,7 @@ import { getInstructorCourses } from "../../api/courseapi";
 import CreateCourseButton from "./CreateCourseButton";
 import SearchBar from "./SearchBar";
 import CourseCard from "./CourseCard";
+import InstructorNavbar from "./InstructorNavbar";
 
 export default function InstructorDashboard() {
 
@@ -33,7 +34,8 @@ export default function InstructorDashboard() {
   );
 
   return (
-
+    <>
+    <InstructorNavbar/>
     <div className="min-h-screen bg-gray-100 p-6">
 
       {/* Header Section */}
@@ -74,6 +76,6 @@ export default function InstructorDashboard() {
       )}
 
     </div>
-
+    </>
   );
 }

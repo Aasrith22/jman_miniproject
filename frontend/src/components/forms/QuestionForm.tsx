@@ -2,6 +2,7 @@ import "../../styles/questionform.css";
 import { useState, useEffect } from "react";
 import { CreateQuestionDTO, CreateQuestionChoiceDTO, Questions } from "../../types/lms";
 import { updateQuestion } from "../../api/questionsapi";
+import InstructorNavbar from "../InstructorManageCourses/InstructorNavbar";
 interface Props {
   onAdd: (q: CreateQuestionDTO) => void;
   assessmentId: string;
@@ -67,6 +68,7 @@ const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdat
 
   }, [editingQuestion]);
   return (
+    <>
     <main className="question-form">
 
       <h2>Add Question</h2>
@@ -100,6 +102,7 @@ const QuestionForm = ({ onAdd, assessmentId,editingQuestion,clearEditing,onUpdat
       <button onClick={handleSubmit}>{editingQuestion ? "Save Changes" : "Add Question"}</button>
 
     </main>
+    </>
   );
 };
 

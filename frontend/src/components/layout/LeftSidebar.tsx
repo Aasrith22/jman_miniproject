@@ -10,7 +10,8 @@ interface props {
     onCreateAssessment: ()=>void;
     onDeleteAssessment: (id:string) => void;
     onEditModule : (module : CourseModule) => void;
-    onDeleteModule : (id : string) => void
+    onDeleteModule : (id : string) => void;
+    onEditAssessment : (id : string) => void;
 }
 
 const LeftSidebar = ({
@@ -22,7 +23,8 @@ const LeftSidebar = ({
   onDeleteAssessment,
   onEditModule,
   onDeleteModule,
-  selectedModuleId
+  selectedModuleId,
+  onEditAssessment
 }: props) => {
 
     return(
@@ -71,7 +73,12 @@ const LeftSidebar = ({
             {assessment ? (
                 <div className="assessment-row">
                     <span>{assessment.title}</span>
-
+                    <button
+                      className="delete-btn"
+                      onClick={() => onEditAssessment(assessment.assessment_id)}
+                    >
+                      Edit
+                    </button>
                     <button
                       className="delete-btn"
                       onClick={() => onDeleteAssessment(assessment.assessment_id)}

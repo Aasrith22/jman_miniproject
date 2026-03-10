@@ -17,6 +17,8 @@ import { deleteAssessment, fetchAssessment } from "../api/assessmentapi"
 import LeftSidebar from "../components/layout/LeftSidebar";
 import RightSidebar from "../components/layout/RightSideBar";
 import CenterPanel from "../components/layout/CenterPanel";
+import Navbar from '../components/enrollment/Navbar';
+import InstructorNavbar from '../components/InstructorManageCourses/InstructorNavbar';
 
 type ActiveForm = "addModule" | "addSection" | null;
 
@@ -95,46 +97,55 @@ const CourseBuilder = () => {
   const handleUpdateSection = (updated : Section) => {
     setSections(prev => prev.map(s => s.section_id==updated.section_id ? updated : s));
   }
+  const handleEditAssessment = (id : string) => {
+    navigate(`/assessment/${id}`);
+  }
   const navigate = useNavigate();
   return (
-    <div className="layout">
-      <LeftSidebar
-        modules={modules}
-        onSelectModule={setSelectedModule}
-        onAddModule={() => setActiveForm("addModule")}
-        assessment={assessment}
-        onCreateAssessment={()=>{
-          navigate(`/${courseId}/assessment/create`)
-        }}
-        onDeleteAssessment={handledeleteAssessment}
-        onEditModule={handleEditModule}
-        onDeleteModule={handleDeleteModule}
-        selectedModuleId={selectedModule?.module_id ?? null}
-      />
+    <>
+      <InstructorNavbar/>
+      <div className="flex flex-col h-screen w-full overflow-hidden">
+        <div className="layout flex flex-1 overflow-hidden">
+          <LeftSidebar
+            modules={modules}
+            onSelectModule={setSelectedModule}
+            onAddModule={() => setActiveForm("addModule")}
+            assessment={assessment}
+            onCreateAssessment={() => {
+              navigate(`/${courseId}/assessment/create`)
+            }}
+            onDeleteAssessment={handledeleteAssessment}
+            onEditModule={handleEditModule}
+            onDeleteModule={handleDeleteModule}
+            selectedModuleId={selectedModule?.module_id ?? null}
+            onEditAssessment={handleEditAssessment}
+          />
 
-      <CenterPanel
-        activeForm={activeForm}
-        courseId={courseId!}
-        selectedModule={selectedModule}
-        onSuccess={() => {
-          setActiveForm(null);
-          refresh();
-        }}
-        editingModule={editingModule}
-        updateModule={handleUpdateModule}
-        clearEditingModule={clearEditingModule}
-        editingSection={editingSection}
-        updateSection={handleUpdateSection}
-        clearEditingSection={clearEditingSection}
-      />
+          <CenterPanel
+            activeForm={activeForm}
+            courseId={courseId!}
+            selectedModule={selectedModule}
+            onSuccess={() => {
+              setActiveForm(null);
+              refresh();
+            }}
+            editingModule={editingModule}
+            updateModule={handleUpdateModule}
+            clearEditingModule={clearEditingModule}
+            editingSection={editingSection}
+            updateSection={handleUpdateSection}
+            clearEditingSection={clearEditingSection}
+          />
 
-      <RightSidebar
-        sections={sections}
-        onAddSection={() => setActiveForm("addSection")}
-        onEditSection={handleEditSection}
-        onDeleteSection={handleDeleteSection}
-      />
-    </div>
+          <RightSidebar
+            sections={sections}
+            onAddSection={() => setActiveForm("addSection")}
+            onEditSection={handleEditSection}
+            onDeleteSection={handleDeleteSection}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 

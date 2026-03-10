@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CreateAssessmentDTO } from "../../types/lms";
 import { createAssessment } from "../../api/assessmentapi";
 import { useNavigate, useParams } from "react-router-dom";
+import InstructorNavbar from '../InstructorManageCourses/InstructorNavbar';
 
 
 const CourseForm = () => {
@@ -30,6 +31,8 @@ const CourseForm = () => {
         navigate(`/assessment/${res.assessment_id}`)
     }
     return(
+      <>
+      <InstructorNavbar/>
   <div className="assessment-form-wrapper">
 
   <form className="assessment-form" onSubmit={handleSubmit}>
@@ -72,6 +75,7 @@ const CourseForm = () => {
   </form>
 
 </div>
+</>
 )
 }
 
