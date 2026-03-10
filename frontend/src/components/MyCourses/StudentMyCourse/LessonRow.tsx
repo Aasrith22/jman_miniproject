@@ -1,6 +1,8 @@
 import React from 'react'
 import { IconCheck, IconClock, IconVideo, IconReading, IconQuiz, IconAssignment } from '../../../assets/icons/course_icons';
 import { Lesson } from '../../../Types/course_type';
+import YouTubeEmbed from './YoutubeEmbed';
+import { useMarkModuleComplete } from '../../../api/hooks/useModules';
 
 
 const lessonTypeConfig = {
@@ -10,41 +12,53 @@ const lessonTypeConfig = {
   assignment: { icon: <IconAssignment />, label: "Assignment", color: "text-rose-400", bg: "bg-rose-400/10" },
 };
 
-const LessonRow = ({ lesson }: { lesson: Lesson }) => {
-  const cfg = lessonTypeConfig[lesson.type];
+const LessonRow = ({ section, index, course_id }: { section: any; index: number; course_id: string }) => {
+
+
+  console.log("lesson row")
+  console.log(section)
+
+  // const { mutate, isPending } = useMarkModuleComplete(course_id)
+
+  // mutate(section.section_id)
+
+  // if (!isPending) {
+  //   console.log()
+  // }
+
   return (
-    <div
-      className={`group flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200
-          ${lesson.completed
-          ? "hover:bg-white/5"
-          : "hover:bg-white/[0.07]"
-        }`}
-    >
+    <>
+      <div className='mx-5 mb-7'>
+        <div className='flex gap-2'>
+          <div className='text-sm text-white/40'>#{index + 1}</div>
+          <div className='font-semibold text-white/90 truncate'>{section.section_title}</div>
+        </div>
+        <div className='mt-2 mx-2'>
+          <div className='mb-3'>
+            {section.section_content}
+          </div>
+          {
+            section.section_images &&
+            <div className=''>
+              <div className='mb-3'>
+                <img
+                  src={section.section_images}
+                  alt={section.section_title}
+                  width={500}
+                />
+                <div className=''>
+                  {section.image_description}
+                </div>
+              </div>
+              <div>
+                <YouTubeEmbed videoId={section.content_url} title={section.url_descriptio} />
+              </div>
 
-      <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all
-          ${lesson.completed
-          ? "bg-emerald-400/20 text-emerald-400"
-          : "border-2 border-white/20 text-transparent group-hover:border-white/40"
-        }`}>
-        <IconCheck />
+            </div>
+          }
+        </div>
       </div>
-
-
-      <span className={`flex-1 text-sm font-medium leading-snug transition-colors
-          ${lesson.completed ? "text-white/50 line-through decoration-white/30" : "text-white/85 group-hover:text-white"}`}>
-        {lesson.title}
-      </span>
-
-      <span className={`hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${cfg.color} ${cfg.bg}`}>
-        {cfg.icon}
-        {cfg.label}
-      </span>
-
-      <span className="flex items-center gap-1 text-xs text-white/35">
-        <IconClock />
-        {lesson.duration}
-      </span>
-    </div>
+    </>
   );
 };
 

@@ -6,15 +6,21 @@ import LessonRow from './LessonRow';
 import { useModuleContent } from '../../../api/hooks/useModules';
 
 
-const ModuleAccordion = ({ module, defaultOpen }: { module: any ; defaultOpen?: boolean ;  }) => {
+const ModuleAccordion = ({ module, defaultOpen, course_id }: { module: any; defaultOpen?: boolean; course_id: string }) => {
 
-  const { data , isLoading } = useModuleContent( module.module_id );
-  console.log( data )
+
+  const { data, isLoading } = useModuleContent(module.module_id);
+  if (!isLoading) {
+    console.log(data)
+  }
 
   const [open, setOpen] = useState(defaultOpen ?? false);
-  const completed = (9+1)//module.lessons.filter((l:any) => l.completed).length;
-  const total = (10)//module.lessons.length;
-  const allDone = data?.is_completed ;
+  const allDone = data?.is_completed;
+
+  const mark_as_complete = () => {
+    console.log("completeted")
+  }
+
 
   return (
     <div className="rounded-2xl border border-white/10 overflow-hidden bg-white/[0.03] backdrop-blur-sm">
@@ -33,9 +39,9 @@ const ModuleAccordion = ({ module, defaultOpen }: { module: any ; defaultOpen?: 
           <p className="text-xs text-white/40 mt-0.5">{module.module_description}</p>
         </div>
 
-        <span className="text-xs text-white/40 whitespace-nowrap">
+        {/* <span className="text-xs text-white/40 whitespace-nowrap">
           {completed}/{total}
-        </span>
+        </span> */}
 
         <span className={`text-white/40 transition-colors ${open ? "text-white/70" : ""}`}>
           <IconChevron open={open} />
@@ -43,18 +49,26 @@ const ModuleAccordion = ({ module, defaultOpen }: { module: any ; defaultOpen?: 
       </button>
 
 
-      <div className="h-[2px] bg-white/5 mx-5">
+      {/* <div className="h-[2px] bg-white/5 mx-5">
         <div
           className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-500 rounded-full"
           style={{ width: `${(completed / total) * 100}%` }}
         />
-      </div>
+      </div> */}
 
       {open && (
         <div className="divide-y divide-white/5 px-1 pb-2 pt-1 animate-fadeIn">
-          {/* {module.lessons.map((lesson : any ) => (
-            <LessonRow key={lesson.id} lesson={lesson} />
-          ))} */}
+          {data && data?.sections.map((section: any, index) => (
+            <LessonRow key={section.section_id
+            } section={section} index={index} course_id={course_id} />
+          ))}
+          <div className='w-full flex justify-end'>
+            {!allDone ?
+              <button className='mx-2 rounded-md bg-green-600 hover:bg-green-400 px-4 py-2'
+                onClick={mark_as_complete}
+              >mark as complete</button> :
+              <div className='mx-2 text-green-500 px-4 py-2' >completed</div>}
+          </div>
         </div>
       )}
     </div>

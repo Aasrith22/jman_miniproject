@@ -3,17 +3,15 @@ import { Course } from '../../../Types/course_type';
 import { IconBack } from '../../../assets/icons/course_icons';
 import { badgeStyle } from '../../../utils/badgeStyle';
 import ModuleAccordion from './ModuleAccordion';
-import { useCourseModules  } from '../../../api/hooks/useModules';
+import { useCourseModules } from '../../../api/hooks/useModules';
 import { Enrollment } from '../../../Types/mycourse_type';
 
 const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => void }) => {
 
-  const { data , isLoading } = useCourseModules(course.course.course_id)
-  console.log(data)
+  const { data, isLoading } = useCourseModules(course.course.course_id)
 
-
-  const totalLessons = data?.total_modules ;
-  const doneLessons = data?.completed_count ;
+  const totalLessons = data?.total_modules;
+  const doneLessons = data?.completed_count;
 
   return (
     <div className="animate-slideIn">
@@ -39,8 +37,8 @@ const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => vo
                 style={{ borderColor: `#6EE7B750`, color: "#6EE7B7", background: `#6EE7B715` }}>
                 {data?.technology}
               </span>
-              <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${badgeStyle(course.progress === 100 ? "completed" : course.progress === 0 ? "started" : "" )}`}>
-              {course.progress === 100 ? "Completeds" : course.progress === 0 ? "Started" : "In Progress"}
+              <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${badgeStyle(course.progress === 100 ? "completed" : course.progress === 0 ? "started" : "")}`}>
+                {course.progress === 100 ? "Completeds" : course.progress === 0 ? "Started" : "In Progress"}
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-1">{data?.course_name}</h2>
@@ -75,9 +73,10 @@ const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => vo
         <h3 className="text-sm font-semibold text-white/40 uppercase tracking-widest px-1 mb-4">
           Course Modules
         </h3>
-        {data?.modules.map((mod, i) => (
-          <ModuleAccordion key={mod.module_id} module={mod} defaultOpen={i === 0}   />
-        ))}
+        {data?.modules.map((mod, i) => {
+
+          return <ModuleAccordion key={mod.module_id} module={mod} defaultOpen={i === 0} course_id={course.course.course_id} />
+        })}
       </div>
     </div>
   );
