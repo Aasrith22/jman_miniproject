@@ -4,7 +4,7 @@ import axios from "axios";
 import { loginUser } from '../../../api/auth.api';
 import { useAuth } from "../../../auth/useAuth";
 
-const API = "http://localhost:3000";
+const API = '';
 
 type Section = {
   section_id: string;

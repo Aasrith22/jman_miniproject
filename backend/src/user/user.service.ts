@@ -1,5 +1,6 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -14,14 +15,21 @@ export class UserService {
       throw new ForbiddenException('Invalid role selection');
     }
 
-    return this.prisma.user.create({
-      data: {
-        full_name: dto.full_name,
-        email: dto.email,
-        password: dto.password, // hash in real app
-        user_role: dto.user_role,
-      },
-    });
+    try {
+      return await this.prisma.user.create({
+        data: {
+          full_name: dto.full_name,
+          email: dto.email,
+          password: dto.password,
+          user_role: dto.user_role,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException('A user with this email already exists');
+      }
+      throw e;
+    }
   }
 
   async getusers(){

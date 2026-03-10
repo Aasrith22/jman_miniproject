@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../../auth/useAuth';
 
-const API = 'http://localhost:3000';
+const API = '';
 
 type Course = {
   course_id: string;

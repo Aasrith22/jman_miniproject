@@ -1,6 +1,7 @@
 import { FormEvent } from "react";
 import { signupUser } from "../api/auth.api";
 import { useNavigate, Link } from "react-router-dom";
+import { AxiosError } from "axios";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -11,14 +12,22 @@ export default function Signup() {
     const formData = new FormData(e.currentTarget);
 
     const data = {
-      full_name: formData.get("fullName") as string, // 👈 NEW
+      full_name: formData.get("fullName") as string,
       email: formData.get("email") as string,
       password: formData.get("password") as string,
       user_role: formData.get("user_role") as "STUDENT" | "INSTRUCTOR",
     };
 
-    await signupUser(data);
-    navigate("/");
+    try {
+      await signupUser(data);
+      navigate("/");
+    } catch (err) {
+      const msg =
+        err instanceof AxiosError
+          ? err.response?.data?.message || err.message
+          : "Signup failed";
+      alert(msg);
+    }
   };
 
   return (
