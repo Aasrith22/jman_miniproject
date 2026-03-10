@@ -11,7 +11,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 export class StudentModulesService {
   private readonly logger = new Logger(StudentModulesService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   private async verifyEnrollment(userId: string, moduleId: string) {
     const module = await this.prisma.courseModule.findUnique({
@@ -46,13 +46,14 @@ export class StudentModulesService {
   }
 
   async getCourseModules(userId: string, courseId: string) {
-    console.log( userId ) ;
-    console.log( courseId )
+    console.log("from get course module")
+    console.log(userId);
+    console.log(courseId)
     const enrollment = await this.prisma.enrollment.findUnique({
       where: { user_id_course_id: { user_id: userId, course_id: courseId } },
       select: { entrollment_id: true, progress: true },
     });
-    
+
     if (!enrollment) {
       throw new ForbiddenException('You are not enrolled in this course');
     }

@@ -1,14 +1,17 @@
 import React from 'react'
-import { Course } from '../../../Types/course_type';
 import { IconBack } from '../../../assets/icons/course_icons';
 import { badgeStyle } from '../../../utils/badgeStyle';
 import ModuleAccordion from './ModuleAccordion';
 import { useCourseModules } from '../../../api/hooks/useModules';
 import { Enrollment } from '../../../Types/mycourse_type';
+import AssessmentAccordion from '../CourseAssessment/AssessmentAccordion';
 
 const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => void }) => {
 
   const { data, isLoading } = useCourseModules(course.course.course_id)
+  if (!isLoading) {
+    console.log(data)
+  }
 
   const totalLessons = data?.total_modules;
   const doneLessons = data?.completed_count;
@@ -77,6 +80,7 @@ const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => vo
 
           return <ModuleAccordion key={mod.module_id} module={mod} defaultOpen={i === 0} course_id={course.course.course_id} />
         })}
+        <AssessmentAccordion />
       </div>
     </div>
   );

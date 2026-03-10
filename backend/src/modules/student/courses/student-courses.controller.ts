@@ -15,7 +15,7 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 
 @Controller('student/courses')
 export class StudentCoursesController {
-  constructor(private readonly coursesService: StudentCoursesService) {}
+  constructor(private readonly coursesService: StudentCoursesService) { }
 
 
   @Get()
@@ -37,6 +37,7 @@ export class StudentCoursesController {
     return this.coursesService.getCourseDetails(courseId, user?.sub);
   }
 
+
   @Get(':courseId/progress')
   @Roles(Role.STUDENT)
   async getCourseProgress(
@@ -45,6 +46,8 @@ export class StudentCoursesController {
   ) {
     return this.coursesService.getCourseProgress(user.sub, courseId);
   }
+
+
 
 
   @Post('enroll')

@@ -14,16 +14,13 @@ export default function StudentCourses() {
     "all"
   );
 
-  // const filteredCourses = COURSES.filter((c) => {
-  //   if (filter === "completed") return c.progress === 100;
-  //   if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
-  //   return true;
-  // });
 
 
   const { data, isLoading } = useMyEnrolledCourses();
-  if (isLoading) return <h1>Loading...</h1>;
-  console.log(data);
+  if (!isLoading) {
+    console.log(data)
+  }
+
   const avg_progress =
     (data?.enrollments ?? []).reduce(
       (sum, course) => sum + course.progress,
@@ -31,17 +28,17 @@ export default function StudentCourses() {
     ) / (data?.enrollments?.length || 1);
   const in_progress =
     (data?.enrollments ?? []).reduce(
-      (sum, course) => course.progress < 100 ? sum + 1 : sum ,
+      (sum, course) => course.progress < 100 ? sum + 1 : sum,
       0
-    ) ;
+    );
 
   const filteredCourses = data?.enrollments.filter((c) => {
     if (filter === "completed") return c.progress === 100;
     if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
     return true;
-  }); 
+  });
 
-    
+
   return (
     <>
       {selectedCourse ? (
@@ -66,7 +63,7 @@ export default function StudentCourses() {
                 value: in_progress,
                 accent: "#93C5FD",
               },
-              { label: "Completed", value:  (data?.total ?? 0) - in_progress, accent: "#FCA5A5" },
+              { label: "Completed", value: (data?.total ?? 0) - in_progress, accent: "#FCA5A5" },
               {
                 label: "Avg Progress",
                 value: `${avg_progress.toFixed(2)}%`,
@@ -94,11 +91,10 @@ export default function StudentCourses() {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all
-                      ${
-                        filter === f
-                          ? "bg-white text-[#080c14]"
-                          : "bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-white/80"
-                      }`}
+                      ${filter === f
+                    ? "bg-white text-[#080c14]"
+                    : "bg-white/[0.06] text-white/50 hover:bg-white/10 hover:text-white/80"
+                  }`}
               >
                 {f === "all" ? "All Courses" : f.replace("-", " ")}
               </button>

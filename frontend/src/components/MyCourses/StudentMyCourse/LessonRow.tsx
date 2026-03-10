@@ -2,7 +2,7 @@ import React from 'react'
 import { IconCheck, IconClock, IconVideo, IconReading, IconQuiz, IconAssignment } from '../../../assets/icons/course_icons';
 import { Lesson } from '../../../Types/course_type';
 import YouTubeEmbed from './YoutubeEmbed';
-import { useMarkModuleComplete } from '../../../api/hooks/useModules';
+
 
 
 const lessonTypeConfig = {
@@ -13,18 +13,6 @@ const lessonTypeConfig = {
 };
 
 const LessonRow = ({ section, index, course_id }: { section: any; index: number; course_id: string }) => {
-
-
-  console.log("lesson row")
-  console.log(section)
-
-  // const { mutate, isPending } = useMarkModuleComplete(course_id)
-
-  // mutate(section.section_id)
-
-  // if (!isPending) {
-  //   console.log()
-  // }
 
   return (
     <>

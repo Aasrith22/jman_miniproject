@@ -17,7 +17,7 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 @Roles(Role.STUDENT)
 @Controller('student/assessments')
 export class StudentAssessmentsController {
-  constructor(private readonly assessmentsService: StudentAssessmentsService) {}
+  constructor(private readonly assessmentsService: StudentAssessmentsService) { }
 
   @Get(':assessmentId')
   async getAssessment(
@@ -52,4 +52,5 @@ export class StudentAssessmentsController {
   ) {
     return this.assessmentsService.getAttemptDetails(user.sub, attemptId);
   }
+
 }

@@ -14,7 +14,6 @@ export const moduleKeys = {
 };
 
 export const useCourseModules = (courseId: string) => {
-  console.log( courseId ) 
   return useQuery({
     queryKey: moduleKeys.courseModules(courseId),
     queryFn: () => getCourseModules(courseId),
@@ -39,7 +38,7 @@ export const useMarkModuleComplete = (courseId: string) => {
       queryClient.setQueryData(moduleKeys.content(moduleId), (old: any) =>
         old ? { ...old, is_completed: true, completed_at: data.completed_at } : old,
       );
-     
+
       queryClient.invalidateQueries({ queryKey: moduleKeys.courseModules(courseId) });
       queryClient.invalidateQueries({ queryKey: courseKeys.progress(courseId) });
       queryClient.invalidateQueries({ queryKey: courseKeys.myCourses });

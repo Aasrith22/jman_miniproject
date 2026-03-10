@@ -4,21 +4,23 @@ import { IconCheck, IconChevron } from '../../../assets/icons/course_icons';
 import { Module } from '../../../Types/course_type';
 import LessonRow from './LessonRow';
 import { useModuleContent } from '../../../api/hooks/useModules';
-
+import { useMarkModuleComplete } from '../../../api/hooks/useModules';
 
 const ModuleAccordion = ({ module, defaultOpen, course_id }: { module: any; defaultOpen?: boolean; course_id: string }) => {
 
 
   const { data, isLoading } = useModuleContent(module.module_id);
-  if (!isLoading) {
-    console.log(data)
-  }
+
+
 
   const [open, setOpen] = useState(defaultOpen ?? false);
   const allDone = data?.is_completed;
 
+
+  const { mutate, isPending } = useMarkModuleComplete(course_id)
+
   const mark_as_complete = () => {
-    console.log("completeted")
+    data && mutate(data?.module_id)
   }
 
 
@@ -64,9 +66,9 @@ const ModuleAccordion = ({ module, defaultOpen, course_id }: { module: any; defa
           ))}
           <div className='w-full flex justify-end'>
             {!allDone ?
-              <button className='mx-2 rounded-md bg-green-600 hover:bg-green-400 px-4 py-2'
-                onClick={mark_as_complete}
-              >mark as complete</button> :
+              (isPending ? <div className='mx-2 text-green-500 px-4 py-2' >marking...</div> : <button className='mx-2 rounded-md bg-green-600 hover:bg-green-400 px-4 py-2'
+                onClick={() => mark_as_complete()}
+              >mark as complete</button>) :
               <div className='mx-2 text-green-500 px-4 py-2' >completed</div>}
           </div>
         </div>
