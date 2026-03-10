@@ -15,6 +15,11 @@ export const getCourseModules = async (
   overall_progress: number;
   total_modules: number;
   completed_count: number;
+  assessment_details: {
+    assessment_id: string;
+    description: string;
+    title: string;
+  };
   modules: {
     module_id: string;
     module_title: string;

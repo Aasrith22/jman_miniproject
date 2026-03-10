@@ -3,8 +3,57 @@ import { IconBack } from "../../../assets/icons/course_icons";
 import AssessmentCard from "./QuestionCard";
 import AssessmentCompletionHeader from "./AssessmentCompletionHeader";
 import AssessmentHeader from "./AssessmentHeader";
+import { useEffect, useState } from "react";
+import { useAssessment } from "../../../api/hooks/useAssessments";
+import { useSubmitAssessment } from "../../../api/hooks/useAssessments";
+
+interface AssessmentDetails {
+    assessment_id: string,
+    description: string,
+    title: string,
+}
 
 export default function AssessmentModule() {
+
+
+    const [assessmentDetails, setAssessmentDetails] = useState<AssessmentDetails | null>();
+    const [answers, setAnswers] = useState<{ question_id: string; choice_id: string }[]>([]);
+
+
+
+    const handleAnswerChange = (question_id: string, choice_id: string) => {
+        setAnswers(prev => {
+            const filtered = prev.filter(a => a.question_id !== question_id);
+            return [...filtered, { question_id, choice_id }];
+        });
+    };
+
+
+
+
+
+    useEffect(() => {
+        const assessment_id = sessionStorage.getItem("assessment_id")
+        const description = sessionStorage.getItem("assessment_description")
+        const title = sessionStorage.getItem("assessment_title")
+        assessment_id && description && title && setAssessmentDetails(() => ({
+            assessment_id: assessment_id,
+            description: description,
+            title: title
+        }))
+    }, [])
+
+    const { data, isLoading } = useAssessment(assessmentDetails?.assessment_id ?? "")
+    const { mutate, isPending, data: result } = useSubmitAssessment(assessmentDetails?.assessment_id ?? "")
+
+    const handleSubmit = () => {
+        console.log("Final Assessment Data:", answers);
+        mutate({
+            answers: answers
+        })
+    };
+
+
     return (
         <>
             <div className="animate-slideIn">
@@ -21,19 +70,20 @@ export default function AssessmentModule() {
                         Exit
                     </button>
 
-                    <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    {
+                        assessmentDetails &&
+                        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
 
-                        <div className="flex-1 min-w-0">
-                            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full border"
-                                style={{ borderColor: `#FCA5A550`, color: "#FCA5A5", background: `#FCA5A515` }}>
-                                course category
-                            </span>
-                            <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-1"> course title Assessment</h2>
-                            <p className="text-sm text-white/50">by course instructor </p>
+                            <div className="flex-1 min-w-0">
+
+                                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight mb-1"> {assessmentDetails?.title}</h2>
+                                <p className="text-sm text-white/50">{assessmentDetails.description}</p>
+                            </div>
                         </div>
-                    </div>
+                    }
 
-                    <AssessmentCompletionHeader />
+                    {assessmentDetails &&
+                        <AssessmentCompletionHeader />}
 
 
                 </div>
@@ -42,9 +92,26 @@ export default function AssessmentModule() {
                     <h3 className="text-sm font-semibold text-white/40 uppercase tracking-widest px-1 mb-4">
                         Question #1
                     </h3>
-                    <div className="">
-                        <AssessmentCard />
-                    </div>
+                    {
+                        assessmentDetails ?
+                            <div className="">
+                                {
+                                    data && data.questions.map((question: any, index) => (
+                                        < AssessmentCard key={index} question={question} index={index} onAnswerChange={handleAnswerChange} />
+                                    ))
+
+                                }
+                                <div className="flex justify-end mt-5">
+
+                                    <button className="px-3 py-2 rounded-md bg-green-600 hover:bg-green-500"
+                                        onClick={handleSubmit}
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </div> :
+                            <h1>No Assessment found !</h1>
+                    }
                 </div>
 
             </div>

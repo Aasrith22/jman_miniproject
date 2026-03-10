@@ -49,6 +49,9 @@ export class StudentModulesService {
     console.log("from get course module")
     console.log(userId);
     console.log(courseId)
+
+
+
     const enrollment = await this.prisma.enrollment.findUnique({
       where: { user_id_course_id: { user_id: userId, course_id: courseId } },
       select: { entrollment_id: true, progress: true },
@@ -76,6 +79,21 @@ export class StudentModulesService {
       },
     });
 
+    const assessment = await this.prisma.assessment.findUnique({
+      where: {
+        fk_course_id: courseId
+      },
+      select: {
+        assessment_id: true,
+        description: true,
+        title: true
+      }
+    });
+
+
+    console.log(assessment);
+
+
     if (!course) throw new NotFoundException('Course not found');
 
     const completions = await this.prisma.moduleCompletion.findMany({
@@ -94,6 +112,7 @@ export class StudentModulesService {
       completed_at: completionMap.get(mod.module_id) ?? null,
     }));
 
+
     return {
       message: 'Course modules retrieved',
       data: {
@@ -104,6 +123,7 @@ export class StudentModulesService {
         total_modules: course.modules.length,
         completed_count: completions.length,
         modules: modulesWithStatus,
+        assessment_details: assessment
       },
     };
   }

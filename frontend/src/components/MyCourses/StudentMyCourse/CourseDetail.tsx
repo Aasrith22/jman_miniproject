@@ -8,9 +8,13 @@ import AssessmentAccordion from '../CourseAssessment/AssessmentAccordion';
 
 const CourseDetail = ({ course, onBack }: { course: Enrollment; onBack: () => void }) => {
 
+
+
   const { data, isLoading } = useCourseModules(course.course.course_id)
-  if (!isLoading) {
-    console.log(data)
+  if (!isLoading && data && data.assessment_details) {
+    sessionStorage.setItem("assessment_id", data.assessment_details.assessment_id)
+    sessionStorage.setItem("assessment_description", data.assessment_details.description)
+    sessionStorage.setItem("assessment_title", data.assessment_details.title)
   }
 
   const totalLessons = data?.total_modules;

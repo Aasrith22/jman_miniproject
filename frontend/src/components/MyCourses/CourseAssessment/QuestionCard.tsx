@@ -1,41 +1,27 @@
 import React from "react";
 
-export default function AssessmentCard() {
+export default function AssessmentCard({ question, index, onAnswerChange }: { question: any, index: number, onAnswerChange: (qId: string, cId: string) => void }) {
 
     return (
         <>
-            <div className="rounded-2xl border border-white/10 overflow-hidden bg-white/[0.03] backdrop-blur-sm">
+            <div className="rounded-2xl border border-white/10 overflow-hidden bg-white/[0.03] backdrop-blur-sm mb-2">
                 <div className="mx-10 my-7">
-                    <div> Questions ?</div>
+                    <div>{index + 1} {question.question_text} ?</div>
                     <div className="mt-2">
-                        <div className="flex gap-4">
-                            <input type="radio" name="options" value="value 1" id="option1" />
-                            <label htmlFor="option1">Options 1</label>
-                        </div>
-                        <div className="flex gap-4 mt-2">
-                            <input type="radio" name="options" value="value 2" id="option2" />
-                            <label htmlFor="option2">Options 2</label>
-                        </div>
-                        <div className="flex gap-4 mt-2">
-                            <input type="radio" name="options" value="value 3" id="option3" />
-                            <label htmlFor="option3">Options 3</label>
-                        </div>
-                        <div className="flex gap-4 mt-2">
-                            <input type="radio" name="options" value="value 4" id="option4" />
-                            <label htmlFor="option4">Options 4</label>
-                        </div>
+                        {
+                            question.choices.map((choice: any, index: number) => (
+                                < div className="flex gap-4">
+                                    <input type="radio" name={question.question_text} value={choice.choice_id} id="option1" onChange={() => onAnswerChange(question.question_id, choice.choice_id)} />
+                                    <label htmlFor="option1">{choice.choice_text}</label>
+                                </div>
+                            ))
+
+                        }
                     </div>
 
-                    <div className="flex justify-between mt-5">
-                        <button className="px-3 py-2 rounded-md bg-green-600 hover:bg-green-500">
-                            Previous
-                        </button>
-                        <button className="px-3 py-2 rounded-md bg-green-600 hover:bg-green-500">
-                            Next
-                        </button>
-                    </div>
+
                 </div>
-            </div>
+            </div >
         </>
     );
 }

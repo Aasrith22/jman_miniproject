@@ -2,12 +2,19 @@ import React from 'react'
 import { useState } from 'react';
 import { IconCheck, IconChevron } from '../../../assets/icons/course_icons';
 import { Module } from '../../../Types/course_type';
+import { useNavigate, useSubmit } from 'react-router-dom';
 
 const AssessmentAccordion = () => {
 
-    const take_assessment = () => {
 
-    }
+    const navigate = useNavigate()
+
+
+    const handleNavigation = () => {
+        navigate('/mycourse/assessment');
+    };
+
+
 
     const allDone = false
 
@@ -26,7 +33,7 @@ const AssessmentAccordion = () => {
                     Not complted
                 </span>
                 <button className='rounded-md px-3 py-2 bg-green-600 hover:bg-green-500'
-                    onClick={() => take_assessment()}
+                    onClick={() => handleNavigation()}
                 >
                     Assessment
                 </button>
