@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from '../../../api/axios';
 import { loginUser } from '../../../api/auth.api';
 import { useAuth } from "../../../auth/useAuth";
-
-const API = '';
 
 type Section = {
   section_id: string;
@@ -46,8 +44,8 @@ function EnrollmentPage() {
   useEffect(() => {
     if (!courseId) return;
     setLoading(true);
-    axios
-      .get(`${API}/courses/${courseId}`)
+    api
+      .get(`/courses/${courseId}`)
       .then((res) => setCourse(res.data))
       .catch(() => setError("Course not found."))
       .finally(() => setLoading(false));
@@ -83,7 +81,7 @@ function EnrollmentPage() {
       // 2. Enroll using the user id decoded from JWT (available through context)
       const uid = user?.sub;
       if (!uid) throw new Error("Unable to determine user id");
-      await axios.post(`${API}/courses/enroll`, {
+      await api.post(`/courses/enroll`, {
         user_id: uid,
         course_id: courseId || '',
       });
