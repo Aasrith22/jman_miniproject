@@ -13,6 +13,7 @@ async function main() {
   await prisma.questionChoice.deleteMany({});
   await prisma.questions.deleteMany({});
   await prisma.assessment.deleteMany({});
+  await prisma.moduleCompletion.deleteMany({});
   await prisma.enrollment.deleteMany({});
   await prisma.section.deleteMany({});
   await prisma.courseModule.deleteMany({});
@@ -218,42 +219,33 @@ async function main() {
   console.log("✅ Sections created");
 
   // ============================================
-  // 6. CREATE ASSESSMENTS (1 per module)
+  // 6. CREATE ASSESSMENTS (1 per course)
   // ============================================
   console.log("📋 Creating assessments...");
   const assessment1 = await prisma.assessment.create({
     data: {
       title: "React Basics Quiz",
       description: "Test your understanding of React fundamentals",
-      total_marks: 50,
-      duration_minutes: 30,
-      max_attempts: 3,
-      fk_module_id: module1_1.module_id,
+      passing_score: 50,
       fk_course_id: course1.course_id,
     },
   });
 
   const assessment2 = await prisma.assessment.create({
     data: {
-      title: "Hooks & State Management Quiz",
-      description: "Assessment on React Hooks and state patterns",
-      total_marks: 60,
-      duration_minutes: 45,
-      max_attempts: 2,
-      fk_module_id: module1_2.module_id,
-      fk_course_id: course1.course_id,
+      title: "Node.js Backend Quiz",
+      description: "Assessment on Node.js and state patterns",
+      passing_score: 60,
+      fk_course_id: course2.course_id,
     },
   });
 
   const assessment3 = await prisma.assessment.create({
     data: {
-      title: "Express.js Fundamentals Quiz",
-      description: "Test your Express.js knowledge",
-      total_marks: 50,
-      duration_minutes: 30,
-      max_attempts: 2,
-      fk_module_id: module2_1.module_id,
-      fk_course_id: course2.course_id,
+      title: "PostgreSQL Fundamentals Quiz",
+      description: "Test your PostgreSQL knowledge",
+      passing_score: 50,
+      fk_course_id: course3.course_id,
     },
   });
 
@@ -266,9 +258,8 @@ async function main() {
   const q1_1 = await prisma.questions.create({
     data: {
       question_text: "What is React?",
-      question_order: 1,
-      question_marks: 5,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 5,
       fk_assessment_id: assessment1.assessment_id,
     },
   });
@@ -276,9 +267,8 @@ async function main() {
   const q1_2 = await prisma.questions.create({
     data: {
       question_text: "Which of the following are React core concepts? (Select all that apply)",
-      question_order: 2,
-      question_marks: 10,
-      question_type: "MCQ_MULTIPLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 10,
       fk_assessment_id: assessment1.assessment_id,
     },
   });
@@ -286,9 +276,8 @@ async function main() {
   const q1_3 = await prisma.questions.create({
     data: {
       question_text: "What does JSX stand for?",
-      question_order: 3,
-      question_marks: 5,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 5,
       fk_assessment_id: assessment1.assessment_id,
     },
   });
@@ -296,9 +285,8 @@ async function main() {
   const q2_1 = await prisma.questions.create({
     data: {
       question_text: "How do you declare state in a functional component?",
-      question_order: 1,
-      question_marks: 10,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 10,
       fk_assessment_id: assessment2.assessment_id,
     },
   });
@@ -306,9 +294,8 @@ async function main() {
   const q2_2 = await prisma.questions.create({
     data: {
       question_text: "What is the purpose of useEffect?",
-      question_order: 2,
-      question_marks: 15,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 15,
       fk_assessment_id: assessment2.assessment_id,
     },
   });
@@ -316,9 +303,8 @@ async function main() {
   const q2_3 = await prisma.questions.create({
     data: {
       question_text: "Which is a state management library for React?",
-      question_order: 3,
-      question_marks: 10,
-      question_type: "MCQ_MULTIPLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 10,
       fk_assessment_id: assessment2.assessment_id,
     },
   });
@@ -326,9 +312,8 @@ async function main() {
   const q3_1 = await prisma.questions.create({
     data: {
       question_text: "What is Express.js?",
-      question_order: 1,
-      question_marks: 10,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 10,
       fk_assessment_id: assessment3.assessment_id,
     },
   });
@@ -336,9 +321,8 @@ async function main() {
   const q3_2 = await prisma.questions.create({
     data: {
       question_text: "How do you create a simple HTTP server with Express?",
-      question_order: 2,
-      question_marks: 15,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 15,
       fk_assessment_id: assessment3.assessment_id,
     },
   });
@@ -346,9 +330,8 @@ async function main() {
   const q3_3 = await prisma.questions.create({
     data: {
       question_text: "What are middleware functions in Express?",
-      question_order: 3,
-      question_marks: 10,
-      question_type: "MCQ_SINGLE",
+      question_type: "MULTIPLE_CHOICE",
+      points: 10,
       fk_assessment_id: assessment3.assessment_id,
     },
   });
@@ -363,190 +346,190 @@ async function main() {
     data: [
       // Q1_1 options
       {
-        option_text: "A JavaScript library for building user interfaces",
+        choice_text: "A JavaScript library for building user interfaces",
         is_correct: true,
         fk_question_id: q1_1.question_id,
       },
       {
-        option_text: "A backend framework",
+        choice_text: "A backend framework",
         is_correct: false,
         fk_question_id: q1_1.question_id,
       },
       {
-        option_text: "A database management system",
+        choice_text: "A database management system",
         is_correct: false,
         fk_question_id: q1_1.question_id,
       },
       {
-        option_text: "A CSS preprocessing tool",
+        choice_text: "A CSS preprocessing tool",
         is_correct: false,
         fk_question_id: q1_1.question_id,
       },
       // Q1_2 options
       {
-        option_text: "Components",
+        choice_text: "Components",
         is_correct: true,
         fk_question_id: q1_2.question_id,
       },
       {
-        option_text: "Props",
+        choice_text: "Props",
         is_correct: true,
         fk_question_id: q1_2.question_id,
       },
       {
-        option_text: "State",
+        choice_text: "State",
         is_correct: true,
         fk_question_id: q1_2.question_id,
       },
       {
-        option_text: "Virtual Machine",
+        choice_text: "Virtual Machine",
         is_correct: false,
         fk_question_id: q1_2.question_id,
       },
       // Q1_3 options
       {
-        option_text: "JavaScript XML",
+        choice_text: "JavaScript XML",
         is_correct: true,
         fk_question_id: q1_3.question_id,
       },
       {
-        option_text: "Java Syntax Extension",
+        choice_text: "Java Syntax Extension",
         is_correct: false,
         fk_question_id: q1_3.question_id,
       },
       {
-        option_text: "JSON XML",
+        choice_text: "JSON XML",
         is_correct: false,
         fk_question_id: q1_3.question_id,
       },
       {
-        option_text: "JavaScript Extension",
+        choice_text: "JavaScript Extension",
         is_correct: false,
         fk_question_id: q1_3.question_id,
       },
       // Q2_1 options
       {
-        option_text: "Using the useState hook",
+        choice_text: "Using the useState hook",
         is_correct: true,
         fk_question_id: q2_1.question_id,
       },
       {
-        option_text: "Using this.state",
+        choice_text: "Using this.state",
         is_correct: false,
         fk_question_id: q2_1.question_id,
       },
       {
-        option_text: "Using global variables",
+        choice_text: "Using global variables",
         is_correct: false,
         fk_question_id: q2_1.question_id,
       },
       {
-        option_text: "Using localStorage",
+        choice_text: "Using localStorage",
         is_correct: false,
         fk_question_id: q2_1.question_id,
       },
       // Q2_2 options
       {
-        option_text: "To handle side effects in functional components",
+        choice_text: "To handle side effects in functional components",
         is_correct: true,
         fk_question_id: q2_2.question_id,
       },
       {
-        option_text: "To manage component props",
+        choice_text: "To manage component props",
         is_correct: false,
         fk_question_id: q2_2.question_id,
       },
       {
-        option_text: "To create event listeners",
+        choice_text: "To create event listeners",
         is_correct: false,
         fk_question_id: q2_2.question_id,
       },
       {
-        option_text: "To style components",
+        choice_text: "To style components",
         is_correct: false,
         fk_question_id: q2_2.question_id,
       },
       // Q2_3 options
       {
-        option_text: "Redux",
+        choice_text: "Redux",
         is_correct: true,
         fk_question_id: q2_3.question_id,
       },
       {
-        option_text: "Zustand",
+        choice_text: "Zustand",
         is_correct: true,
         fk_question_id: q2_3.question_id,
       },
       {
-        option_text: "Recoil",
+        choice_text: "Recoil",
         is_correct: true,
         fk_question_id: q2_3.question_id,
       },
       {
-        option_text: "Flask",
+        choice_text: "Flask",
         is_correct: false,
         fk_question_id: q2_3.question_id,
       },
       // Q3_1 options
       {
-        option_text: "A minimal and flexible Node.js web application framework",
+        choice_text: "A minimal and flexible Node.js web application framework",
         is_correct: true,
         fk_question_id: q3_1.question_id,
       },
       {
-        option_text: "A database system",
+        choice_text: "A database system",
         is_correct: false,
         fk_question_id: q3_1.question_id,
       },
       {
-        option_text: "A frontend framework",
+        choice_text: "A frontend framework",
         is_correct: false,
         fk_question_id: q3_1.question_id,
       },
       {
-        option_text: "A CSS framework",
+        choice_text: "A CSS framework",
         is_correct: false,
         fk_question_id: q3_1.question_id,
       },
       // Q3_2 options
       {
-        option_text: "const app = express(); app.listen(3000);",
+        choice_text: "const app = express(); app.listen(3000);",
         is_correct: true,
         fk_question_id: q3_2.question_id,
       },
       {
-        option_text: "new Express().start(3000);",
+        choice_text: "new Express().start(3000);",
         is_correct: false,
         fk_question_id: q3_2.question_id,
       },
       {
-        option_text: "express.createServer(3000);",
+        choice_text: "express.createServer(3000);",
         is_correct: false,
         fk_question_id: q3_2.question_id,
       },
       {
-        option_text: "app.start(3000);",
+        choice_text: "app.start(3000);",
         is_correct: false,
         fk_question_id: q3_2.question_id,
       },
       // Q3_3 options
       {
-        option_text: "Functions that have access to request and response objects",
+        choice_text: "Functions that have access to request and response objects",
         is_correct: true,
         fk_question_id: q3_3.question_id,
       },
       {
-        option_text: "Database connectors",
+        choice_text: "Database connectors",
         is_correct: false,
         fk_question_id: q3_3.question_id,
       },
       {
-        option_text: "CSS preprocessors",
+        choice_text: "CSS preprocessors",
         is_correct: false,
         fk_question_id: q3_3.question_id,
       },
       {
-        option_text: "Authentication libraries",
+        choice_text: "Authentication libraries",
         is_correct: false,
         fk_question_id: q3_3.question_id,
       },
@@ -563,8 +546,8 @@ async function main() {
     data: {
       fk_user_id: student1.user_id,
       fk_assessment_id: assessment1.assessment_id,
-      completed_at: new Date(),
       score: 40,
+      passed: true,
     },
   });
 
@@ -572,8 +555,8 @@ async function main() {
     data: {
       fk_user_id: student2.user_id,
       fk_assessment_id: assessment1.assessment_id,
-      completed_at: new Date(),
       score: 45,
+      passed: true,
     },
   });
 
@@ -581,8 +564,8 @@ async function main() {
     data: {
       fk_user_id: student3.user_id,
       fk_assessment_id: assessment2.assessment_id,
-      completed_at: new Date(),
       score: 50,
+      passed: true,
     },
   });
 
@@ -594,7 +577,7 @@ async function main() {
   console.log("✍️  Creating attempt answers...");
   
   // Get choices for linking
-  const options = await prisma.questionChoice.findMany();
+  const choices = await prisma.questionChoice.findMany();
   
   // student1 attempt1 answers
   await prisma.studentAnswer.createMany({
@@ -602,67 +585,58 @@ async function main() {
       {
         fk_attempt_id: attempt1.attempt_id,
         fk_question_id: q1_1.question_id,
-        fk_choice_id: options.find(o => o.option_text === "A JavaScript library for building user interfaces")?.choice_id,
-        is_correct: true,
-        selected_text: "A JavaScript library for building user interfaces",
+        fk_choice_id: choices.find(o => o.choice_text === "A JavaScript library for building user interfaces")?.choice_id,
+        text_answer: "A JavaScript library for building user interfaces",
       },
       {
         fk_attempt_id: attempt1.attempt_id,
         fk_question_id: q1_2.question_id,
-        fk_choice_id: options.find(o => o.option_text === "Components")?.choice_id,
-        is_correct: false, // user only selected 1 out of 3 correct
-        selected_text: "Components",
+        fk_choice_id: choices.find(o => o.choice_text === "Components")?.choice_id,
+        text_answer: "Components",
       },
       {
         fk_attempt_id: attempt1.attempt_id,
         fk_question_id: q1_3.question_id,
-        fk_choice_id: options.find(o => o.option_text === "JavaScript XML")?.choice_id,
-        is_correct: true,
-        selected_text: "JavaScript XML",
+        fk_choice_id: choices.find(o => o.choice_text === "JavaScript XML")?.choice_id,
+        text_answer: "JavaScript XML",
       },
       // student2 attempt2 answers
       {
         fk_attempt_id: attempt2.attempt_id,
         fk_question_id: q1_1.question_id,
-        fk_choice_id: options.find(o => o.option_text === "A JavaScript library for building user interfaces")?.choice_id,
-        is_correct: true,
-        selected_text: "A JavaScript library for building user interfaces",
+        fk_choice_id: choices.find(o => o.choice_text === "A JavaScript library for building user interfaces")?.choice_id,
+        text_answer: "A JavaScript library for building user interfaces",
       },
       {
         fk_attempt_id: attempt2.attempt_id,
         fk_question_id: q1_2.question_id,
-        fk_choice_id: options.find(o => o.option_text === "Props")?.choice_id,
-        is_correct: true,
-        selected_text: "Props",
+        fk_choice_id: choices.find(o => o.choice_text === "Props")?.choice_id,
+        text_answer: "Props",
       },
       {
         fk_attempt_id: attempt2.attempt_id,
         fk_question_id: q1_3.question_id,
-        fk_choice_id: options.find(o => o.option_text === "JavaScript XML")?.choice_id,
-        is_correct: true,
-        selected_text: "JavaScript XML",
+        fk_choice_id: choices.find(o => o.choice_text === "JavaScript XML")?.choice_id,
+        text_answer: "JavaScript XML",
       },
       // student3 attempt3 answers
       {
         fk_attempt_id: attempt3.attempt_id,
         fk_question_id: q2_1.question_id,
-        fk_choice_id: options.find(o => o.option_text === "Using the useState hook")?.choice_id,
-        is_correct: true,
-        selected_text: "Using the useState hook",
+        fk_choice_id: choices.find(o => o.choice_text === "Using the useState hook")?.choice_id,
+        text_answer: "Using the useState hook",
       },
       {
         fk_attempt_id: attempt3.attempt_id,
         fk_question_id: q2_2.question_id,
-        fk_choice_id: options.find(o => o.option_text === "To handle side effects in functional components")?.choice_id,
-        is_correct: true,
-        selected_text: "To handle side effects in functional components",
+        fk_choice_id: choices.find(o => o.choice_text === "To handle side effects in functional components")?.choice_id,
+        text_answer: "To handle side effects in functional components",
       },
       {
         fk_attempt_id: attempt3.attempt_id,
         fk_question_id: q2_3.question_id,
-        fk_choice_id: options.find(o => o.option_text === "Redux")?.choice_id,
-        is_correct: true,
-        selected_text: "Redux",
+        fk_choice_id: choices.find(o => o.choice_text === "Redux")?.choice_id,
+        text_answer: "Redux",
       },
     ],
   });
