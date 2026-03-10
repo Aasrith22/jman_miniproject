@@ -9,8 +9,8 @@ variables:
   acrLoginServer: 'lmsmini.azurecr.io'
   backendImageRepository: 'lms-backend'
   frontendImageRepository: 'lms-frontend'
-  backendAppName: 'lms-backend'
-  frontendAppName: 'lms-frontend'
+  backendAppName: 'lms-b'
+  frontendAppName: 'lms-f'
   tag: '$(Build.BuildId)'
 
 stages:
