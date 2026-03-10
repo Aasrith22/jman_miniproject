@@ -5,7 +5,6 @@ import CourseDetail from "./CourseDetail";
 
 import { Course } from "../../../Types/course_type";
 import { COURSES } from "../../../assets/dymmyData";
-import Header from "../../Header";
 
 import { useMyEnrolledCourses } from "../../../api/hooks/useCourses";
 
@@ -21,15 +20,6 @@ export default function StudentCourses() {
     return true;
   });
 
-  const stats = {
-    total: COURSES.length,
-    inProgress: COURSES.filter((c) => c.progress > 0 && c.progress < 100)
-      .length,
-    completed: COURSES.filter((c) => c.progress === 100).length,
-    avgProgress: Math.round(
-      COURSES.reduce((s, c) => s + c.progress, 0) / COURSES.length
-    ),
-  };
 
   const { data, isLoading } = useMyEnrolledCourses();
   if (isLoading) return <h1>Loading...</h1>;
@@ -44,6 +34,14 @@ export default function StudentCourses() {
       (sum, course) => course.progress < 100 ? sum + 1 : sum ,
       0
     ) ;
+
+  const filteredCourses_1 = data?.enrollments.filter((c) => {
+    if (filter === "completed") return c.progress === 100;
+    if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
+    return true;
+  }); 
+
+    
   return (
     <>
       {selectedCourse ? (
