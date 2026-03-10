@@ -16,16 +16,24 @@ export default function Login() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const res = await loginUser({ email, password });
-    const token = res.data.access_token;
+    try {
+      const res = await loginUser({ email, password });
+      const token = res.data.access_token;
 
-    login(token);
+      login(token);
 
-    const payload = decodeJWT(token);
+      const payload = decodeJWT(token);
 
-    payload.role === "INSTRUCTOR"
-      ? navigate("/instructor")
-      : navigate("/student");
+      payload.role === "INSTRUCTOR"
+        ? navigate("/instructor")
+        : navigate("/student");
+    } catch (error: any) {
+      if (error.response) {
+        alert(error.response.data.message); // "Invalid credentials"
+      } else {
+        alert("Login failed. Please try again.");
+      }
+    }
   };
 
   return (
@@ -33,12 +41,7 @@ export default function Login() {
       <form onSubmit={handleSubmit} style={formStyle}>
         <h2>Login</h2>
 
-        <input
-          name="email"
-          placeholder="Email"
-          required
-          style={inputStyle}
-        />
+        <input name="email" placeholder="Email" required style={inputStyle} />
 
         <input
           name="password"
