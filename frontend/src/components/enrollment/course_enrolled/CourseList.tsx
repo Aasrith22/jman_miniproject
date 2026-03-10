@@ -25,6 +25,7 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
   const [search, setSearch] = useState('');
   // track which card is hovered to apply inline hover styles
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState('');
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -121,6 +122,16 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
             onChange={e => setSearch(e.target.value)}
             style={s.searchInput}
           />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            style={s.filterSelect}
+          >
+            <option value="">Sort By</option>
+            <option value="course_asc">Course Name (A-Z)</option>
+            <option value="course_desc">Course Name (Z-A)</option>
+            <option value="instructor">Instructor Name</option>
+          </select>
         </div>
       </div>
 
@@ -202,6 +213,14 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 28, fontWeight: 800, marginBottom: 32, color: '#1e1b4b',
     borderLeft: '4px solid #7c3aed', paddingLeft: 14,
   },
+  filterSelect: {
+  padding: '10px 12px',
+  fontSize: 14,
+  borderRadius: 10,
+  border: '1px solid #e6e7f8',
+  outline: 'none',
+  cursor: 'pointer'
+},
   headerRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, marginBottom: 12 },
   searchBar: { display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' },
   searchInput: {
