@@ -13,7 +13,8 @@ import { StudentModulesService } from './student-modules.service';
 import { CurrentUser, JwtPayload } from '../../../common/decorators/current-user.decorator';
 import { Roles } from '../../../common/decorators/roles.decorator';
 
-@Roles(Role.STUDENT)
+//this role is not working 
+// @Roles(Role.STUDENT)
 @Controller('student')
 export class StudentModulesController {
   constructor(private readonly modulesService: StudentModulesService) {}

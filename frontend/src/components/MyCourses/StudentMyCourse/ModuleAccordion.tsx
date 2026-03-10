@@ -3,13 +3,18 @@ import { useState } from 'react';
 import { IconCheck, IconChevron } from '../../../assets/icons/course_icons';
 import { Module } from '../../../Types/course_type';
 import LessonRow from './LessonRow';
+import { useModuleContent } from '../../../api/hooks/useModules';
 
 
-const ModuleAccordion = ({ module, defaultOpen }: { module: Module; defaultOpen?: boolean }) => {
+const ModuleAccordion = ({ module, defaultOpen }: { module: any ; defaultOpen?: boolean ;  }) => {
+
+  const { data , isLoading } = useModuleContent( module.module_id );
+  console.log( data )
+
   const [open, setOpen] = useState(defaultOpen ?? false);
-  const completed = module.lessons.filter((l) => l.completed).length;
-  const total = module.lessons.length;
-  const allDone = completed === total;
+  const completed = (9+1)//module.lessons.filter((l:any) => l.completed).length;
+  const total = (10)//module.lessons.length;
+  const allDone = data?.is_completed ;
 
   return (
     <div className="rounded-2xl border border-white/10 overflow-hidden bg-white/[0.03] backdrop-blur-sm">
@@ -24,8 +29,8 @@ const ModuleAccordion = ({ module, defaultOpen }: { module: Module; defaultOpen?
         </span>
 
         <div className="flex-1 text-left min-w-0">
-          <p className="text-sm font-semibold text-white/90 truncate">{module.title}</p>
-          <p className="text-xs text-white/40 mt-0.5">{module.description}</p>
+          <p className="text-sm font-semibold text-white/90 truncate">{module.module_title}</p>
+          <p className="text-xs text-white/40 mt-0.5">{module.module_description}</p>
         </div>
 
         <span className="text-xs text-white/40 whitespace-nowrap">
@@ -47,9 +52,9 @@ const ModuleAccordion = ({ module, defaultOpen }: { module: Module; defaultOpen?
 
       {open && (
         <div className="divide-y divide-white/5 px-1 pb-2 pt-1 animate-fadeIn">
-          {module.lessons.map((lesson) => (
+          {/* {module.lessons.map((lesson : any ) => (
             <LessonRow key={lesson.id} lesson={lesson} />
-          ))}
+          ))} */}
         </div>
       )}
     </div>

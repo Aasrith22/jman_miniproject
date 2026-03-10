@@ -206,6 +206,7 @@ export class StudentCoursesService {
       orderBy: { enrolled_at: 'desc' },
     });
 
+    
     const enriched = await Promise.all(
       enrollments.map(async (enrollment) => {
         let bestAttempt = null;

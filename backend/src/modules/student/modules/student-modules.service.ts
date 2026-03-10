@@ -13,9 +13,6 @@ export class StudentModulesService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  /**
-   * Verify the student is enrolled in the course that owns this module
-   */
   private async verifyEnrollment(userId: string, moduleId: string) {
     const module = await this.prisma.courseModule.findUnique({
       where: { module_id: moduleId },
@@ -48,16 +45,14 @@ export class StudentModulesService {
     return { module, enrollment };
   }
 
-  /**
-   * Get all modules for a course the student is enrolled in
-   */
   async getCourseModules(userId: string, courseId: string) {
-    // Verify enrollment
+    console.log( userId ) ;
+    console.log( courseId )
     const enrollment = await this.prisma.enrollment.findUnique({
       where: { user_id_course_id: { user_id: userId, course_id: courseId } },
       select: { entrollment_id: true, progress: true },
     });
-
+    
     if (!enrollment) {
       throw new ForbiddenException('You are not enrolled in this course');
     }
@@ -82,7 +77,6 @@ export class StudentModulesService {
 
     if (!course) throw new NotFoundException('Course not found');
 
-    // Fetch completion status for all modules
     const completions = await this.prisma.moduleCompletion.findMany({
       where: {
         user_id: userId,
@@ -113,9 +107,6 @@ export class StudentModulesService {
     };
   }
 
-  /**
-   * Get a specific module with all its sections (learning content)
-   */
   async getModuleWithSections(userId: string, moduleId: string) {
     const { module, enrollment } = await this.verifyEnrollment(userId, moduleId);
 
@@ -141,14 +132,11 @@ export class StudentModulesService {
         },
       },
     });
-
-    // Check if this module is already completed
     const completion = await this.prisma.moduleCompletion.findUnique({
       where: { user_id_module_id: { user_id: userId, module_id: moduleId } },
       select: { completed_at: true },
     });
 
-    // Get sibling modules for navigation (prev/next)
     const allModules = await this.prisma.courseModule.findMany({
       where: { fk_course_id: module.fk_course_id },
       select: { module_id: true, module_title: true },
@@ -176,13 +164,9 @@ export class StudentModulesService {
     };
   }
 
-  /**
-   * Mark a module as completed and recalculate course progress
-   */
   async markModuleAsComplete(userId: string, moduleId: string) {
     const { module, enrollment } = await this.verifyEnrollment(userId, moduleId);
 
-    // Prevent duplicate completions
     const existing = await this.prisma.moduleCompletion.findUnique({
       where: { user_id_module_id: { user_id: userId, module_id: moduleId } },
     });
@@ -191,20 +175,16 @@ export class StudentModulesService {
       throw new ConflictException('You have already completed this module');
     }
 
-    // Use a transaction: create completion + update progress atomically
     const result = await this.prisma.$transaction(async (tx) => {
-      // 1. Record the completion
       const completion = await tx.moduleCompletion.create({
         data: { user_id: userId, module_id: moduleId },
         select: { completion_id: true, completed_at: true },
       });
 
-      // 2. Count total modules in the course
       const totalModules = await tx.courseModule.count({
         where: { fk_course_id: module.fk_course_id },
       });
 
-      // 3. Count completed modules (now includes the one we just created)
       const completedModules = await tx.moduleCompletion.count({
         where: {
           user_id: userId,
@@ -212,13 +192,11 @@ export class StudentModulesService {
         },
       });
 
-      // 4. Calculate new progress percentage
       const newProgress =
         totalModules > 0
           ? parseFloat(((completedModules / totalModules) * 100).toFixed(2))
           : 0;
 
-      // 5. Update enrollment progress
       const updatedEnrollment = await tx.enrollment.update({
         where: {
           user_id_course_id: {
@@ -262,9 +240,6 @@ export class StudentModulesService {
     };
   }
 
-  /**
-   * Get all completed modules for the student (across all courses)
-   */
   async getMyCompletions(userId: string) {
     const completions = await this.prisma.moduleCompletion.findMany({
       where: { user_id: userId },

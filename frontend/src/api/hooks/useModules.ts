@@ -14,6 +14,7 @@ export const moduleKeys = {
 };
 
 export const useCourseModules = (courseId: string) => {
+  console.log( courseId ) 
   return useQuery({
     queryKey: moduleKeys.courseModules(courseId),
     queryFn: () => getCourseModules(courseId),

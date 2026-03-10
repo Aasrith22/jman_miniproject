@@ -9,16 +9,16 @@ import { COURSES } from "../../../assets/dymmyData";
 import { useMyEnrolledCourses } from "../../../api/hooks/useCourses";
 
 export default function StudentCourses() {
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<any | null>(null);
   const [filter, setFilter] = useState<"all" | "in-progress" | "completed">(
     "all"
   );
 
-  const filteredCourses = COURSES.filter((c) => {
-    if (filter === "completed") return c.progress === 100;
-    if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
-    return true;
-  });
+  // const filteredCourses = COURSES.filter((c) => {
+  //   if (filter === "completed") return c.progress === 100;
+  //   if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
+  //   return true;
+  // });
 
 
   const { data, isLoading } = useMyEnrolledCourses();
@@ -35,7 +35,7 @@ export default function StudentCourses() {
       0
     ) ;
 
-  const filteredCourses_1 = data?.enrollments.filter((c) => {
+  const filteredCourses = data?.enrollments.filter((c) => {
     if (filter === "completed") return c.progress === 100;
     if (filter === "in-progress") return c.progress > 0 && c.progress < 100;
     return true;
@@ -105,11 +105,11 @@ export default function StudentCourses() {
             ))}
           </div>
 
-          {filteredCourses.length > 0 ? (
+          {filteredCourses && filteredCourses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
               {filteredCourses.map((course) => (
                 <CourseCard
-                  key={course.id}
+                  key={course.entrollment_id}
                   course={course}
                   onClick={() => setSelectedCourse(course)}
                 />
