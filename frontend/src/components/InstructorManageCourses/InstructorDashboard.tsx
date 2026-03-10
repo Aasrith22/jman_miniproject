@@ -33,20 +33,47 @@ export default function InstructorDashboard() {
   );
 
   return (
-    <div>
 
-      <CreateCourseButton instructorId={instructorId} />
+    <div className="min-h-screen bg-gray-100 p-6">
 
-      <SearchBar search={search} setSearch={setSearch} />
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
 
-      {filtered.map((course) => (
-        <CourseCard
-          key={course.course_id}
-          course={course}
-          onDelete={handleDeleteCourse}
-        />
-      ))}
+        <h1 className="text-2xl font-bold text-gray-800">
+          Manage Courses
+        </h1>
+
+        <div className="flex gap-4 items-center">
+
+          <SearchBar search={search} setSearch={setSearch} />
+
+          <CreateCourseButton instructorId={instructorId} />
+
+        </div>
+
+      </div>
+
+      {/* Course Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {filtered.map((course) => (
+          <CourseCard
+            key={course.course_id}
+            course={course}
+            onDelete={handleDeleteCourse}
+          />
+        ))}
+
+      </div>
+
+      {/* Empty State */}
+      {filtered.length === 0 && (
+        <div className="text-center text-gray-500 mt-10">
+          No courses found
+        </div>
+      )}
 
     </div>
+
   );
 }

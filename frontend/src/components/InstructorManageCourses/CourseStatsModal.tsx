@@ -6,7 +6,8 @@ import {
   PolarRadiusAxis,
 } from "recharts";
 
-export default function CourseStatsModal({ stats }: any) {
+export default function CourseStatsModal({ stats, onClose }: any) {
+
   const data = [
     { subject: "Students", value: stats.students },
     { subject: "Attempts", value: stats.attempts },
@@ -15,18 +16,47 @@ export default function CourseStatsModal({ stats }: any) {
   ];
 
   return (
-    <div>
-      <h3>Course Statistics</h3>
 
-      <RadarChart width={400} height={300} data={data}>
-        <PolarGrid />
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
 
-        <PolarAngleAxis dataKey="subject" />
+      <div className="bg-white rounded-xl shadow-lg p-6 w-[420px] relative">
 
-        <PolarRadiusAxis />
+        {/* Close Button */}
+        <button
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          onClick={onClose}
+        >
+          ✕
+        </button>
 
-        <Radar dataKey="value" stroke="#8884d8" fill="#8884d8" />
-      </RadarChart>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+          Course Statistics
+        </h3>
+
+        <div className="flex justify-center">
+
+          <RadarChart width={350} height={280} data={data}>
+
+            <PolarGrid />
+
+            <PolarAngleAxis dataKey="subject" />
+
+            <PolarRadiusAxis />
+
+            <Radar
+              dataKey="value"
+              stroke="#6366F1"
+              fill="#6366F1"
+              fillOpacity={0.6}
+            />
+
+          </RadarChart>
+
+        </div>
+
+      </div>
+
     </div>
+
   );
 }

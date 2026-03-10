@@ -4,14 +4,11 @@ import { deleteCourse, getCourseStats } from "../../api/courseapi";
 import CourseStatsModal from "./CourseStatsModal";
 
 export default function CourseCard({ course, onDelete }: any) {
-
   const navigate = useNavigate();
   const [stats, setStats] = useState<any>(null);
 
   const handleDelete = async () => {
     await deleteCourse(course.course_id);
-
-    // remove from UI
     onDelete(course.course_id);
   };
 
@@ -25,31 +22,57 @@ export default function CourseCard({ course, onDelete }: any) {
   };
 
   return (
-    <div className="course-card">
+    <div className="bg-white shadow-md rounded-xl p-5 border border-gray-200 hover:shadow-lg hover:border-indigo-300 transition">
 
-      <h3>{course.course_name}</h3>
+      {/* Course Title */}
+      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+        {course.course_name}
+      </h3>
 
-      <p>Technology: {course.technology}</p>
+      {/* Course Technology */}
+      <p className="text-gray-600 text-sm">
+        <span className="font-medium">Technology:</span> {course.technology}
+      </p>
 
-      <p>Students: {course.enrolled_students.length}</p>
+      {/* Students Count */}
+      <p className="text-gray-600 text-sm mt-1">
+        <span className="font-medium">Students:</span>{" "}
+        {course.enrolled_students?.length || 0}
+      </p>
 
-      <div>
+      {/* Buttons */}
+      <div className="flex gap-3 mt-4">
 
-        <button onClick={handleEdit}>
-          Edit
+        <button
+          onClick={handleEdit}
+          className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition text-sm"
+        >
+          ✏️ Edit
         </button>
 
-        <button onClick={handleDelete}>
-          Delete
+        <button
+          onClick={handleDelete}
+          className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition text-sm"
+        >
+          🗑 Delete
         </button>
 
-        <button onClick={handleStats}>
-          Statistics
+        <button
+          onClick={handleStats}
+          className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition text-sm"
+        >
+          📊 Statistics
         </button>
 
       </div>
 
-      {stats && <CourseStatsModal stats={stats} />}
+      {/* Statistics Modal */}
+      {stats && (
+        <CourseStatsModal
+          stats={stats}
+          onClose={() => setStats(null)}
+        />
+      )}
 
     </div>
   );
