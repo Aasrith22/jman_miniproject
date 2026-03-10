@@ -1,0 +1,16 @@
+/* Minimal stylesheet for CourseList classes (component uses inline styles for most layout).
+   This file previously contained TypeScript style object by mistake. Keeping a small
+   CSS file for a11y and fallback rules for the class names used in the component. */
+
+.course-card { cursor: pointer; }
+.course-card:focus { outline: 2px solid rgba(124,58,237,0.35); }
+.enroll-btn { /* visual fallback if inline styles fail */ padding: 10px 14px; border-radius: 10px; }
+.registered-btn[disabled] { opacity: 0.85; }
+.dots-btn { background: transparent; }
+.deregister-item { color: #ef4444; }
+
+/* small responsive tweak */
+@media (max-width: 420px) {
+  .course-card { padding: 16px; }
+}
+
