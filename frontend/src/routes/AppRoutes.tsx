@@ -10,6 +10,7 @@ import CourseBuilder from "../pages/CourseBuilder";
 import AssessmentForm from "../components/forms/Assessmentform"
 import QuestionForm from "../components/forms/QuestionForm";
 import AssessmentBuilder from "../pages/AssessmentBuilder";
+import InstructorManageDashboard from "../components/InstructorManageCourses/InstructorDashboard";
 
 export default function AppRoutes() {
   return (
@@ -23,6 +24,15 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute user_role="INSTRUCTOR">
             <InstructorDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/instructor/manage-courses"
+        element={
+          <ProtectedRoute user_role="INSTRUCTOR">
+            <InstructorManageDashboard />
           </ProtectedRoute>
         }
       />

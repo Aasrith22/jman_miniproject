@@ -11,6 +11,7 @@ import { SectionModule } from './section/section.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { CoursesController } from './course_enrollment/courses.controller';
 import { CoursesService } from './course_enrollment/courses.service';
+import { CourseManageModule } from './courseManage/courseManage.module';
 
 @Module({
   imports: [
@@ -21,9 +22,9 @@ import { CoursesService } from './course_enrollment/courses.service';
     CoursemoduleModule,
     SectionModule,
     DashboardModule,
+    CourseManageModule,
   ],
   controllers: [AppController, CoursesController],
   providers: [AppService, CoursesService],
 })
 export class AppModule {}
-
