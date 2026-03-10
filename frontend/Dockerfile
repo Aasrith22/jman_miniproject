@@ -7,6 +7,11 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+# Accept build argument from the pipeline
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 RUN npm run build
 
 # Stage 2: Production
