@@ -12,6 +12,7 @@ export interface SignupDto extends LoginDto {
 export const loginUser = (data: LoginDto) =>
   api.post<{ access_token: string }>("/auth/login", data);
 
+
 export const signupUser = async (data: SignupDto) => {
   try {
     console.log("Sending data to backend...", data);
