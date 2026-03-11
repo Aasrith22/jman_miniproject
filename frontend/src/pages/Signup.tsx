@@ -49,7 +49,7 @@ export default function Signup() {
           required
           style={inputStyle}
         />
-
+        <p>Min Length of 6 Chars</p>
         <input
           name="password"
           type="password"
