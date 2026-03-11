@@ -96,7 +96,7 @@ const inputStyle: React.CSSProperties = {
 const buttonStyle: React.CSSProperties = {
   width: "100%",
   padding: "8px",
-  background: "#28a745",
+  background: "#007bff",
   color: "#fff",
   border: "none",
   cursor: "pointer",

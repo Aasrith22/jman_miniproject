@@ -17,8 +17,8 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
   const [section_content, setContent] = useState("");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<string | null>("");
-
+  const [content_url, setContentUrl] = useState("");
+  
   const [image_description, setImageDescription] = useState("");
   const [url_description, setUrlDescription] = useState("");
 
@@ -45,7 +45,6 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
     e.preventDefault();
 
     let imageUrl = "";
-    let videoUrl = "";
 
     if (imageFile) {
       imageUrl = await uploadToCloudinary(imageFile, "image");
@@ -61,7 +60,7 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
       module_id: moduleId,
       section_images: imageUrl || undefined,
       image_description: image_description || undefined,
-      content_url: videoFile || undefined,
+      content_url: content_url || undefined,
       url_description: url_description || undefined,
     };
 
@@ -80,6 +79,7 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
     setContent(editingSection.section_content || "");
     setImageDescription(editingSection.image_description || "");
     setUrlDescription(editingSection.url_description || "");
+    setContentUrl(editingSection.content_url || "");
   }, [editingSection]);
   return (
     <div className="form-wrapper">
@@ -113,12 +113,14 @@ const SectionForm = ({ moduleId, onSuccess, editingSection, onUpdate, clearEditi
           onChange={(e) => setImageDescription(e.target.value)}
         />
 
-        <h3>Upload Video</h3>
+        <h3>Yt Embed Link</h3>
 
         <input
           type="text"
           // accept="video/*"
-          onChange={(e) => setVideoFile(e.target.value || null)}
+          value={content_url}
+          placeholder="Enter youtube embed video link here"
+          onChange={(e) => setContentUrl(e.target.value)}
         />
 
         <input
