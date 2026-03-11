@@ -19,3 +19,13 @@ export async function updateSection(id: string, data: CreateSectionDto) {
     const res = await api.patch(`/section/updatesection/${id}`, data);
     return res.data;
 }
+
+export async function deleteSection(id : string){
+    const res = await api.delete(`section/deletesection/${id}`);
+    return res.data;
+}
+
+export async function updateSection(id : string, data : CreateSectionDto){
+    const res = await api.patch(`section/updatesection/${id}`,data);
+    return res.data;
+}
