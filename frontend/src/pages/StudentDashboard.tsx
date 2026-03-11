@@ -7,6 +7,7 @@ import CourseList from '../components/enrollment/course_enrolled/CourseList';
 import EnrollmentPage from '../components/enrollment/enrollement_frontend/Enrollmentpage';
 import StudentAnalytics from './StudentAnalytics';
 import MyCourseLayout from '../components/MyCourseLayout';
+import StudentCourses from '../components/MyCourses/StudentMyCourse/StudentCourses';
 
 export default function StudentDashboard() {
   return (
@@ -17,7 +18,9 @@ export default function StudentDashboard() {
       <Routes>
         <Route index element={<Navigate to="my-courses" replace />} />
         <Route path="my-courses" element={<CourseList />} />
-        <Route path="enroll" element={<MyCourseLayout />} />
+        <Route path="enroll" element={<MyCourseLayout />}>
+          <Route index element={<StudentCourses />} />
+        </Route>
         <Route path="enrollment/:courseId" element={<EnrollmentPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="analytics" element={<StudentAnalytics />} />

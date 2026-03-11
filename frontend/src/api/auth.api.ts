@@ -29,6 +29,6 @@ export const signupUser = async (data: SignupDto) => {
   } catch (error) {
     // If it reaches here, the request failed (400/500 Error)
     console.error("SIGNUP ERROR:");
-    return null;
+    throw error;
   }
 }
