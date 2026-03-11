@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../api/axios';
 import { useAuth } from '../../../auth/useAuth';
-
-const API = 'http://localhost:3000';
 
 type Course = {
   course_id: string;
@@ -42,7 +40,7 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
     setFetchError('');
     try {
       const uid = getUserId();
-      const res = await axios.get(uid ? `${API}/courses?userId=${uid}` : `${API}/courses`);
+      const res = await api.get(uid ? `/courses?userId=${uid}` : `/courses`);
       setCourses(res.data || []);
     } catch {
       setFetchError('Could not load courses. Make sure the backend is running on port 3000.');
@@ -59,10 +57,10 @@ export default function CourseList({ enrolledOnly = false }: { enrolledOnly?: bo
   async function toggleEnroll(uid: string, course: Course) {
     try {
       if (course.enrolled) {
-        await axios.post(`${API}/courses/unroll`, { user_id: uid, course_id: course.course_id });
+        await api.post(`/courses/unroll`, { user_id: uid, course_id: course.course_id });
         showToast('You have successfully deregistered.', 'error');
       } else {
-        await axios.post(`${API}/courses/enroll`, { user_id: uid, course_id: course.course_id });
+        await api.post(`/courses/enroll`, { user_id: uid, course_id: course.course_id });
         showToast('You have successfully registered!', 'success');
       }
       setCourses(prev =>
