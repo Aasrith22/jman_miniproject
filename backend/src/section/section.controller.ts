@@ -8,25 +8,21 @@ export class SectionController {
 
     @Post(':id')
     createsection(@Param('id') id : string,@Body() sectiondto : CreateSectionDto){
-        console.log("Creating Section - Msg from Section Module's Controller");
         return this.sectionservice.createsection(id,sectiondto);
     }
 
     @Get(':id')
     getsections(@Param('id') id : string){
-        console.log("Getting Sections - Msg from Section Module's Controller");
         return this.sectionservice.getsections(id);
     }
 
     @Delete('/deletesection/:id')
     deletesection(@Param('id') id : string){
-        console.log("deleting section - msg from section's module's controller");
         return this.sectionservice.deletesection(id);
     }
 
     @Patch('/updatesection/:id')
     updatesection(@Param('id') id : string , @Body() data : CreateSectionDto){
-        console.log("updating section - msg from section module's controller");
         return this.sectionservice.updatesection(id,data);
     }
 }

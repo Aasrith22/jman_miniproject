@@ -15,13 +15,9 @@ export const loginUser = (data: LoginDto) =>
 
 export const signupUser = async (data: SignupDto) => {
   try {
-    console.log("Sending data to backend...", data);
     const response = await api.post("/user", data);
-    
     // If it reaches here, the request was successful (200/201 OK)
-    const userData = response.data; 
-    console.log("Response received:", userData);
-
+    const userData = response.data;
     if (userData && userData.user_id) {
       localStorage.setItem('userId', userData.user_id.toString());
       return userData;

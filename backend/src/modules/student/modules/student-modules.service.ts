@@ -46,9 +46,7 @@ export class StudentModulesService {
   }
 
   async getCourseModules(userId: string, courseId: string) {
-    console.log("from get course module")
-    console.log(userId);
-    console.log(courseId)
+    // ...existing code...
 
 
 
@@ -91,7 +89,7 @@ export class StudentModulesService {
     });
 
 
-    console.log(assessment);
+    // ...existing code...
 
 
     if (!course) throw new NotFoundException('Course not found');

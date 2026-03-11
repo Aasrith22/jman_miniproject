@@ -32,7 +32,6 @@ export class AuthService {
       email: user.email,
       full_name: user.full_name, // include name so frontend can display it
     };
-    console.log(user.user_id);
     return {
       access_token: this.jwtService.sign(payload),
       user_id: user.user_id, // Add this line

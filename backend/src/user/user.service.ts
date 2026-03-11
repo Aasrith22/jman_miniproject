@@ -23,6 +23,13 @@ export class UserService {
           password: dto.password,
           user_role: dto.user_role,
         },
+        select: {
+          user_id: true,
+          user_role: true,
+          full_name: true,
+          email: true,
+          // password: false (excluded)
+        },
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
@@ -33,6 +40,14 @@ export class UserService {
   }
 
   async getusers() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: {
+        user_id: true,
+        user_role: true,
+        full_name: true,
+        email: true,
+        // password: false (excluded)
+      },
+    });
   }
 }

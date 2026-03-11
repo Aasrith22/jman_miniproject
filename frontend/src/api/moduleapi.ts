@@ -7,7 +7,6 @@ export async function fetchModules( course_id : string) : Promise<CourseModule[]
 }
 
 export async function createModule(data: CreateModuleDto){
-    console.log(data.course_id);
     const res = await api.post(`/coursemodule/${data.course_id}`,data);
     return res.data;
 }
